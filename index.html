@@ -83,15 +83,15 @@
   }
   .mark {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     text-decoration: none;
+    gap: 6px;
   }
-  .mark-a {
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 28px;
-    color: var(--coral);
-    line-height: 1;
+  .mark-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    flex-shrink: 0;
   }
   .mark-rest {
     font-family: var(--body);
@@ -780,7 +780,8 @@
   <nav>
     <div class="wrap">
       <a href="#" class="mark">
-        <span class="mark-a">A</span><span class="mark-rest">gentra</span><span class="mark-tm">™</span>
+        <img src="Agentra_Twitter_Logo.png" alt="Agentra" class="mark-icon">
+        <span class="mark-rest">gentra</span><span class="mark-tm">™</span>
       </a>
       <div class="nav-r">
         <a href="#features">Features</a>
