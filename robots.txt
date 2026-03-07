@@ -1,0 +1,88 @@
+# ============================================
+# Agentra™ — robots.txt
+# Blocks AI training crawlers
+# Allows search engines and agent discovery
+# ============================================
+
+# Allow search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Allow agent discovery files
+# (llms.txt, llms-full.txt, .well-known/)
+# These are intentionally public for AI agents to READ and USE,
+# but NOT for training data ingestion.
+
+# ── Block AI Training Crawlers ──
+
+# OpenAI
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+# Google AI (Gemini training)
+User-agent: Google-Extended
+Disallow: /
+
+# Common Crawl (used by many AI training sets)
+User-agent: CCBot
+Disallow: /
+
+# Anthropic training crawler
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# Meta AI
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+# Apple AI
+User-agent: Applebot-Extended
+Disallow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Disallow: /
+
+# Cohere
+User-agent: cohere-ai
+Disallow: /
+
+# Bytedance / TikTok
+User-agent: Bytespider
+Disallow: /
+
+# Amazon / Alexa
+User-agent: Amazonbot
+Disallow: /
+
+# Diffbot (data extraction)
+User-agent: Diffbot
+Disallow: /
+
+# Catch-all scrapers
+User-agent: Scrapy
+Disallow: /
+
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+# Sitemaps
+Sitemap: https://agentrapay.ai/sitemap.xml

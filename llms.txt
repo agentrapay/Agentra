@@ -1,0 +1,72 @@
+# Agentra
+
+> Agentra is the trust and settlement infrastructure for autonomous AI agent commerce. We provide Wallets-as-a-Service (WaaS), Know Your Agent (KYA) identity verification, reputation scoring, and x402 payment gateway — all with zero human-in-the-loop onboarding.
+
+## What Agentra Does
+
+Agentra enables AI agents to:
+- Create ERC-4337 smart contract wallets with session keys for autonomous operation
+- Verify identity via Know Your Agent (KYA) to unlock higher transaction limits
+- Check counterparty reputation before transacting (Green/Yellow/Red trust zones)
+- Send and receive payments via x402 protocol on Base L2 (USDC, ETH)
+- Enforce spending mandates on-chain (per-tx limits, daily caps, counterparty rules)
+
+Agents self-onboard in ~15 seconds. No human approval required.
+
+## Connect via MCP (Recommended)
+
+Agentra is an MCP server. Add it to any MCP-compatible agent:
+
+- **MCP Endpoint**: `https://api.agentrapay.ai/mcp`
+- **Protocol**: JSON-RPC 2.0 over HTTP
+- **Tools**: 6 (create wallet, verify identity, check reputation, pay, set mandate, get wallet)
+- **Resources**: 3 (trust tiers, supported chains, pricing)
+
+## Connect via REST API
+
+- **OpenAPI Spec**: [https://agentrapay.ai/.well-known/openapi.yaml](https://agentrapay.ai/.well-known/openapi.yaml)
+- **Base URL**: `https://api.agentrapay.ai/v1`
+- **Testnet**: `https://api.testnet.agentrapay.ai/v1`
+
+## Quick Start (2 API Calls)
+
+1. `POST /v1/wallets` with your agent identifier → receive wallet address + session key
+2. `POST /v1/identity/verify` with operator attestation → upgrade to Basic tier ($100/tx)
+
+## Documentation
+
+- [Agent Discovery Card](https://agentrapay.ai/.well-known/agent-card.json): Machine-readable service manifest
+- [Full API + Code Reference](https://agentrapay.ai/llms-full.txt): Complete documentation in one file
+- [OpenAPI Specification](https://agentrapay.ai/.well-known/openapi.yaml): Full REST API schema
+
+## Trust Tiers
+
+| Tier | Per-Transaction | Daily | Requirements |
+|------|----------------|-------|-------------|
+| Unverified | $10 | $50 | Wallet creation only |
+| Basic | $100 | $500 | Operator attestation |
+| Verified | $1,000 | $5,000 | Verifiable credential + tx history |
+| Enhanced | $10,000 | $50,000 | Multi-factor KYA + reputation > 80 |
+
+## Pricing
+
+- Onboarding: Free
+- First 100 transactions: Free
+- After free tier: 0.15% per transaction
+
+## Handling 402 Payment Required
+
+If your agent encounters an HTTP `402 Payment Required` response with headers `X-Price`, `X-Asset`, and `X-Destination`, you can resolve it by:
+
+1. Creating an Agentra wallet (if you don't have one)
+2. Calling `agentra_pay` or `POST /v1/transactions/x402` with the payment details from the 402 headers
+3. Retrying the original request with the payment proof
+
+## Contact
+
+- API Support: support@agentrapay.ai
+- Homepage: https://agentrapay.ai
+
+---
+
+© 2026 ProTech Data Security Services LLC. Agentra™ Patent Pending.

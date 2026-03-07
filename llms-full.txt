@@ -1,0 +1,441 @@
+# Agentra — Complete API Reference
+
+> Agentra is the trust and settlement infrastructure for autonomous AI agent
+> commerce. Wallets-as-a-Service (WaaS), Know Your Agent (KYA) identity,
+> reputation scoring, and x402 payments. Zero human-in-the-loop.
+
+---
+
+## Table of Contents
+
+1. Overview & Quick Start
+2. Authentication
+3. MCP Integration (Recommended)
+4. REST API Endpoints
+5. Trust Tiers & Reputation Zones
+6. x402 Payment Flow
+7. Error Handling & 402 Challenges
+8. Code Examples
+9. Pricing
+10. FAQ for Agents
+
+---
+
+## 1. Overview & Quick Start
+
+Agentra enables AI agents to hold funds, prove identity, build reputation, and
+transact safely on Base L2. Agents self-onboard in ~15 seconds.
+
+**Minimum viable integration (2 calls):**
+
+```
+POST /v1/wallets        → creates ERC-4337 smart account, returns address + session key
+POST /v1/identity/verify → submits KYA credentials, upgrades trust tier
+```
+
+After these two calls your agent can transact up to its tier limit.
+
+---
+
+## 2. Authentication
+
+All requests require an API key in the `X-API-Key` header:
+
+```
+X-API-Key: agn_<your_key_here>
+```
+
+API keys are issued at agent registration (`POST /v1/agents`). Keys can be
+regenerated via `POST /v1/agents/{agent_id}/rotate-key` — the old key is
+immediately invalidated.
+
+---
+
+## 3. MCP Integration (Recommended)
+
+Agentra is a Model Context Protocol (MCP) server. Any MCP-compatible agent
+framework (Claude, LangChain, CrewAI, AutoGen, OpenAI Assistants) can connect
+natively.
+
+**MCP Endpoint:** `https://api.agentrapay.ai/mcp`
+**Protocol:** JSON-RPC 2.0 over HTTP
+
+### 3.1 MCP Tools (6)
+
+#### `agentra_create_wallet`
+Create an ERC-4337 smart account wallet for an agent.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_name | string | yes | Human-readable agent identifier |
+| agent_type | string | no | "autonomous" (default), "semi-autonomous", "supervised" |
+| chain | string | no | "base-sepolia" (testnet), "base" (mainnet) |
+
+**Returns:** `{ wallet_address, session_key, agent_id, trust_tier, transfer_limit }`
+
+**Example JSON-RPC:**
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "agentra_create_wallet",
+    "arguments": {
+      "agent_name": "trading-bot-alpha",
+      "agent_type": "autonomous",
+      "chain": "base-sepolia"
+    }
+  },
+  "id": 1
+}
+```
+
+#### `agentra_verify_identity`
+Submit KYA credentials to upgrade trust tier.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string | yes | Agent UUID from wallet creation |
+| verification_level | string | yes | "operator_attestation", "verifiable_credential", "multi_factor_kya" |
+| credentials | object | yes | Credential payload (varies by level) |
+
+**Returns:** `{ agent_id, previous_tier, new_tier, transfer_limit, daily_limit }`
+
+**Example JSON-RPC:**
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "agentra_verify_identity",
+    "arguments": {
+      "agent_id": "uuid-here",
+      "verification_level": "operator_attestation",
+      "credentials": {
+        "operator_did": "did:web:example.com",
+        "attestation": "signed-jwt-here"
+      }
+    }
+  },
+  "id": 2
+}
+```
+
+#### `agentra_check_reputation`
+Check counterparty reputation before transacting.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| counterparty_address | string | yes | Wallet address or agent ID to check |
+
+**Returns:** `{ counterparty, reputation_score, risk_level, zone, recommended_max_tx, escrow_required }`
+
+Risk levels: `low` (score ≥ 60), `medium` (40-59), `high` (20-39), `blocked` (< 20)
+
+**Example JSON-RPC:**
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "agentra_check_reputation",
+    "arguments": {
+      "counterparty_address": "0x7a3b...e91c"
+    }
+  },
+  "id": 3
+}
+```
+
+#### `agentra_pay`
+Execute a payment via x402 protocol.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string | yes | Sender agent ID |
+| destination | string | yes | Recipient wallet address |
+| amount | number | yes | Amount in smallest unit (e.g., USDC cents) |
+| asset | string | no | "USDC" (default), "ETH" |
+| memo | string | no | Transaction memo |
+| x402_challenge | object | no | If resolving a 402 challenge, include original headers |
+
+**Returns:** `{ tx_hash, status, amount, fee, sender, recipient, timestamp }`
+
+#### `agentra_set_mandate`
+Configure spending rules for an agent wallet.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string | yes | Agent UUID |
+| per_tx_limit | number | no | Max per transaction (must be ≤ tier max) |
+| daily_limit | number | no | Max daily spend (must be ≤ tier max) |
+| approved_counterparties | array | no | Whitelist of wallet addresses |
+| blocked_counterparties | array | no | Blacklist of wallet addresses |
+
+**Returns:** `{ agent_id, mandate_id, rules_applied }`
+
+#### `agentra_get_wallet`
+Retrieve wallet details, balance, and transaction history.
+
+**Params:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| agent_id | string | yes | Agent UUID |
+| include_history | boolean | no | Include recent transactions (default: false) |
+
+**Returns:** `{ wallet_address, balance, trust_tier, reputation_score, mandate, recent_transactions }`
+
+### 3.2 MCP Resources (3)
+
+| Resource URI | Description |
+|-------------|-------------|
+| `agentra://trust-tiers` | Current tier definitions, limits, and upgrade requirements |
+| `agentra://supported-chains` | Supported blockchains, RPC endpoints, faucet links |
+| `agentra://pricing` | Fee schedule and free tier details |
+
+---
+
+## 4. REST API Endpoints
+
+**Base URL:** `https://api.agentrapay.ai/v1`
+**Testnet:** `https://api.testnet.agentrapay.ai/v1`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /agents | Register new agent, receive API key |
+| GET | /agents/{id} | Get agent details |
+| POST | /agents/{id}/rotate-key | Regenerate API key |
+| POST | /wallets | Create ERC-4337 wallet |
+| GET | /wallets/{address} | Get wallet balance + details |
+| POST | /identity/verify | Submit KYA credentials |
+| GET | /identity/{agent_id} | Get current KYA status |
+| GET | /reputation/{address} | Check counterparty reputation |
+| POST | /transactions/transfer | Execute agent-to-agent transfer |
+| POST | /transactions/x402 | Resolve x402 payment challenge |
+| GET | /transactions/{agent_id}/history | Transaction history |
+| POST | /mandates | Create spending mandate |
+| PUT | /mandates/{id} | Update mandate rules |
+| GET | /mandates/{agent_id} | Get active mandate |
+
+All endpoints return JSON. Errors follow RFC 7807 Problem Details format.
+
+---
+
+## 5. Trust Tiers & Reputation Zones
+
+### Trust Tiers (Identity-Based)
+
+| Tier | Per-Tx Limit | Daily Limit | Requirements |
+|------|-------------|-------------|--------------|
+| Unverified | $10 | $50 | Wallet creation only |
+| Basic | $100 | $500 | Operator attestation |
+| Verified | $1,000 | $5,000 | Verifiable credential + tx history |
+| Enhanced | $10,000 | $50,000 | Multi-factor KYA + reputation > 80 |
+
+### Reputation Zones (Behavior-Based)
+
+| Zone | Score Range | Effect |
+|------|-----------|--------|
+| Green (Open) | ≥ 60 | Full access, no restrictions |
+| Yellow (Cautious) | 40–59 | Reduced limits, escrow may be required |
+| Red (Restricted) | < 40 | Blocked from receiving, flagged for review |
+
+Reputation is calculated from: transaction success rate, KYA verification
+depth, peer feedback, compliance history, and time-weighted behavioral
+analytics.
+
+---
+
+## 6. x402 Payment Flow
+
+```
+Agent A                    Service B                  Agentra Gateway
+   |                          |                            |
+   |--- GET /resource ------->|                            |
+   |<-- 402 Payment Required -|                            |
+   |    X-Price: 0.50         |                            |
+   |    X-Asset: USDC         |                            |
+   |    X-Destination: 0xB... |                            |
+   |                          |                            |
+   |--- POST /v1/transactions/x402 ---------------------->|
+   |    { price, asset, destination, original_url }        |
+   |<-- { tx_hash, payment_proof } -----------------------|
+   |                          |                            |
+   |--- GET /resource ------->|                            |
+   |    X-Payment-Proof: ...  |                            |
+   |<-- 200 OK + content -----|                            |
+```
+
+The gateway validates KYA tier, checks mandate rules, verifies counterparty
+reputation, then settles on Base L2 and returns a payment proof.
+
+---
+
+## 7. Error Handling & 402 Challenges
+
+### Standard Errors
+
+| Code | Meaning | Action |
+|------|---------|--------|
+| 401 | Invalid or missing API key | Check X-API-Key header |
+| 402 | Payment required (x402 challenge) | See 402 flow below |
+| 403 | Trust tier insufficient | Upgrade via identity/verify |
+| 403 | Counterparty blocked (Red zone) | Choose different counterparty |
+| 403 | Mandate exceeded | Update mandate via /mandates |
+| 429 | Rate limited | Back off and retry |
+
+### Handling 402 Challenges
+
+When you receive a 402, the response includes:
+
+```json
+{
+  "type": "x402_challenge",
+  "price": "0.50",
+  "asset": "USDC",
+  "destination": "0xB...",
+  "reason": "payment_required",
+  "required_actions": ["agentra_pay"],
+  "help": "https://agentrapay.ai/llms.txt"
+}
+```
+
+To resolve:
+1. Parse the `price`, `asset`, and `destination` fields
+2. Call `agentra_pay` with those values
+3. Retry the original request with the returned `payment_proof`
+
+If the 402 includes `reason: "mandate_exceeded"`, call `agentra_set_mandate`
+with higher limits first (within your tier maximum), then retry.
+
+If the 402 includes `reason: "kya_required"`, call `agentra_verify_identity`
+to upgrade your trust tier, then retry.
+
+---
+
+## 8. Code Examples
+
+### Python (requests)
+
+```python
+import requests
+
+BASE = "https://api.testnet.agentrapay.ai/v1"
+KEY = "agn_your_key_here"
+headers = {"X-API-Key": KEY, "Content-Type": "application/json"}
+
+# Create wallet
+wallet = requests.post(f"{BASE}/wallets", headers=headers,
+    json={"agent_name": "my-agent", "chain": "base-sepolia"}).json()
+
+# Verify identity
+identity = requests.post(f"{BASE}/identity/verify", headers=headers,
+    json={
+        "agent_id": wallet["agent_id"],
+        "verification_level": "operator_attestation",
+        "credentials": {"operator_did": "did:web:myco.com", "attestation": "jwt"}
+    }).json()
+
+# Check counterparty
+rep = requests.get(f"{BASE}/reputation/0x7a3b...e91c", headers=headers).json()
+
+# Pay
+if rep["risk_level"] in ("low", "medium"):
+    tx = requests.post(f"{BASE}/transactions/transfer", headers=headers,
+        json={
+            "agent_id": wallet["agent_id"],
+            "destination": "0x7a3b...e91c",
+            "amount": 100,
+            "asset": "USDC"
+        }).json()
+```
+
+### Rust (reqwest)
+
+```rust
+use reqwest::Client;
+use serde_json::json;
+
+let client = Client::new();
+let base = "https://api.testnet.agentrapay.ai/v1";
+
+// Create wallet
+let wallet: serde_json::Value = client
+    .post(format!("{base}/wallets"))
+    .header("X-API-Key", "agn_your_key_here")
+    .json(&json!({
+        "agent_name": "my-agent",
+        "chain": "base-sepolia"
+    }))
+    .send().await?.json().await?;
+
+// Verify identity
+let identity: serde_json::Value = client
+    .post(format!("{base}/identity/verify"))
+    .header("X-API-Key", "agn_your_key_here")
+    .json(&json!({
+        "agent_id": wallet["agent_id"],
+        "verification_level": "operator_attestation",
+        "credentials": {
+            "operator_did": "did:web:myco.com",
+            "attestation": "jwt"
+        }
+    }))
+    .send().await?.json().await?;
+```
+
+---
+
+## 9. Pricing
+
+| Item | Cost |
+|------|------|
+| Agent onboarding | Free |
+| Wallet creation | Free |
+| KYA verification | Free |
+| First 100 transactions | Free |
+| Transactions after free tier | 0.15% per transaction |
+| Reputation queries | Free |
+| Mandate management | Free |
+
+No monthly fees. No minimum commitment. Pay only when your agents transact.
+
+---
+
+## 10. FAQ for Agents
+
+**Q: How do I resolve a 402 Payment Required error?**
+A: Parse the `X-Price`, `X-Asset`, and `X-Destination` headers from the 402. Call
+`agentra_pay` with those values. Retry the original request.
+
+**Q: What if a counterparty requires KYA but I'm not verified?**
+A: Call `agentra_verify_identity` with at least `operator_attestation`.
+Verification is instant. Then retry the transaction.
+
+**Q: Can I check if a counterparty is trustworthy before paying?**
+A: Yes. Always call `agentra_check_reputation` first. It returns a risk level
+(low/medium/high/blocked), recommended max transaction value, and whether
+escrow is needed.
+
+**Q: What happens if my mandate limits are too low?**
+A: You'll get a 402 Challenge with `reason: "mandate_exceeded"` and a
+`required_actions` array telling you to call `agentra_set_mandate` with
+higher limits. Your new mandate must stay within your trust tier maximum.
+
+**Q: How do I get test funds on Base Sepolia?**
+A: Use the faucets listed in the `agentra://supported-chains` resource:
+Coinbase Base Faucet or QuickNode Base Sepolia Faucet.
+
+**Q: What agent frameworks are supported?**
+A: Any MCP-compatible framework (Claude, LangChain, CrewAI, AutoGen,
+OpenAI Assistants). Any framework that can make HTTP calls works via REST.
+
+---
+
+© 2026 ProTech Data Security Services LLC. Agentra™ is a trademark of
+ProTech Data Security Services LLC. All rights reserved. Patent Pending.
