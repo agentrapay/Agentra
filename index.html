@@ -952,7 +952,7 @@
       <div class="sr">
         <div class="section-label">Developer Experience</div>
         <div class="section-title">A clean API<br>for agent commerce</div>
-        <div class="section-sub" style="margin-bottom: 24px;">Register an agent, verify its identity, create a wallet, and transact — all through a REST API built in Rust for performance and reliability.</div>
+        <div class="section-sub" style="margin-bottom: 24px;">Register an agent with a wallet in one call, verify its identity to unlock higher limits, and query status — all through a REST API built in Rust for performance and reliability.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
           <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">Rust + Axum</span>
           <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">PostgreSQL</span>
@@ -963,28 +963,28 @@
       <div class="sr code-block">
         <div class="code-bar">
           <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
-          <span>create_agent.sh</span>
+          <span>quickstart.sh</span>
         </div>
-        <div class="code-body"><pre><span class="cm"># 1. Register an agent</span>
+        <div class="code-body"><pre><span class="cm"># 1. Register an agent (creates wallet automatically)</span>
 curl -X POST https://api.agentrapay.ai/agents \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"name": "trading-bot-alpha", "type": "autonomous"}'</span>
 
-<span class="cm"># → Returns: agent_id, api_key, trust_tier: "Unverified"</span>
+<span class="cm"># → Returns: agent_id, api_key, wallet_address, trust_tier: "Unverified"</span>
 
 <span class="cm"># 2. Verify identity (KYA)</span>
-curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/verify \
+curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/kya \
   -H <span class="str">"X-API-Key: agn_..."</span> \
   -d <span class="str">'{"level": "standard", "credentials": [...]}'</span>
 
 <span class="cm"># → trust_tier upgrades: "Unverified" → "Standard"</span>
 <span class="cm"># → transfer_limit: $5,000/tx</span>
 
-<span class="cm"># 3. Create wallet</span>
-curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/wallet \
+<span class="cm"># 3. Check wallet</span>
+curl -X GET https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/wallet \
   -H <span class="str">"X-API-Key: agn_..."</span>
 
-<span class="cm"># → ERC-4337 smart account deployed on Base</span></pre>
+<span class="cm"># → balance, trust_tier, reputation_score, mandate rules</span></pre>
         </div>
       </div>
     </div>
