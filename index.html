@@ -975,10 +975,10 @@ curl -X POST https://api.agentrapay.ai/agents \
 <span class="cm"># 2. Verify identity (KYA)</span>
 curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/kya \
   -H <span class="str">"X-API-Key: agn_..."</span> \
-  -d <span class="str">'{"field": "operator_name", "value": "Agentra Demo", "agent_name": "trading-bot-alpha", "purpose": "autonomous trading", "operator": "Agentra Demo"}'</span>
+  -d <span class="str">'{"level": "standard", "credentials": [...]}'</span>
 
-<span class="cm"># → trust_tier upgrades: "Unverified" → "Basic"</span>
-<span class="cm"># → transfer_limit: $1,000/tx</span>
+<span class="cm"># → trust_tier upgrades: "Unverified" → "Standard"</span>
+<span class="cm"># → transfer_limit: $5,000/tx</span>
 
 <span class="cm"># 3. Check wallet</span>
 curl -X GET https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/wallet \
@@ -1032,15 +1032,24 @@ curl -X GET https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/
         <li><a href="#">Docs</a></li>
         <li><a href="#">GitHub</a></li>
         <li><a href="#">Twitter</a></li>
-        <li><a href="/cdn-cgi/l/email-protection#066761636872746776677f46616b676f6a2865696b">Contact</a></li>
+        <li><a href="mailto:agentrapay@gmail.com">Contact</a></li>
       </ul>
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Scroll reveal
     const els = document.querySelectorAll('.sr');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
           e.target.classList.add('show');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
