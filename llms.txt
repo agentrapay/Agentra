@@ -1,17 +1,30 @@
 # Agentra
 
-> Agentra is the trust and settlement infrastructure for autonomous AI agent commerce. We provide Wallets-as-a-Service (WaaS), Know Your Agent (KYA) identity verification, reputation scoring, and x402 payment gateway — all with zero human-in-the-loop onboarding.
+> Agentra is the trust and compliance infrastructure for autonomous AI agents.
+> We provide Know Your Agent (KYA) identity verification, bidirectional
+> reputation scoring, non-custodial wallet provisioning, and x402 payment
+> authorization -- all with zero human-in-the-loop onboarding.
+> Agentra authorizes transactions but never touches private keys.
 
 ## What Agentra Does
 
 Agentra enables AI agents to:
-- Create ERC-4337 smart contract wallets with session keys for autonomous operation
-- Verify identity via Know Your Agent (KYA) to unlock higher transaction limits
+- Register and receive an API key for programmatic access
+- Verify identity via Know Your Agent (KYA) to unlock higher transaction tiers
 - Check counterparty reputation before transacting (Green/Yellow/Red trust zones)
-- Send and receive payments via x402 protocol on Base L2 (USDC, ETH)
-- Enforce spending mandates on-chain (per-tx limits, daily caps, counterparty rules)
+- Provision non-custodial wallets via Turnkey secure enclaves (agent owns keys)
+- Authorize agent-to-agent transactions with KYA-gated compliance checks
+- Enforce spending mandates (per-tx limits, daily caps, counterparty rules)
 
 Agents self-onboard in ~15 seconds. No human approval required.
+
+## Non-Custodial Model
+
+Agentra is an Identity Oracle and Trust Layer. When an agent requests a
+transaction authorization, Agentra verifies identity, checks counterparty
+reputation, enforces mandates, and returns a signed attestation plus an
+unsigned transaction. The agent signs the transaction with its own private
+key. Agentra never holds, moves, or has access to agent funds.
 
 ## Connect via MCP (Recommended)
 
@@ -19,48 +32,70 @@ Agentra is an MCP server. Add it to any MCP-compatible agent:
 
 - **MCP Endpoint**: `https://api.agentrapay.ai/mcp`
 - **Protocol**: JSON-RPC 2.0 over HTTP
-- **Tools**: 6 (create wallet, verify identity, check reputation, pay, set mandate, get wallet)
+- **Tools**: 6 (create wallet, verify identity, check reputation, authorize payment, set mandate, get wallet)
 - **Resources**: 3 (trust tiers, supported chains, pricing)
 
 ## Connect via REST API
 
-- **OpenAPI Spec**: [https://agentrapay.ai/.well-known/openapi.yaml](https://agentrapay.ai/.well-known/openapi.yaml)
-- **Base URL**: `https://api.agentrapay.ai/v1`
-- **Testnet**: `https://api.testnet.agentrapay.ai/v1`
+- **OpenAPI Spec**: https://agentrapay.ai/.well-known/openapi.yaml
+- **Base URL**: `https://api.agentrapay.ai`
+- **Authentication**: `X-API-Key` header with `agn_` prefixed key
 
-## Quick Start (2 API Calls)
+## Quick Start (3 API Calls)
 
-1. `POST /v1/wallets` with your agent identifier → receive wallet address + session key
-2. `POST /v1/identity/verify` with operator attestation → upgrade to Basic tier ($100/tx)
+1. `POST /agents` with name, purpose, operator -> receive agent_id + api_key (agn_ prefix)
+2. `POST /agents/{id}/kya` with operator attestation -> upgrade to Basic tier
+3. `POST /v1/authorizations` with transaction details -> receive attestation + unsigned tx
 
 ## Documentation
 
 - [Agent Discovery Card](https://agentrapay.ai/.well-known/agent-card.json): Machine-readable service manifest
 - [Full API + Code Reference](https://agentrapay.ai/llms-full.txt): Complete documentation in one file
 - [OpenAPI Specification](https://agentrapay.ai/.well-known/openapi.yaml): Full REST API schema
+- [Performance Metrics](https://api.agentrapay.ai/v1/status/metrics): Live uptime, latency, and network stats
 
 ## Trust Tiers
 
-| Tier | Per-Transaction | Daily | Requirements |
-|------|----------------|-------|-------------|
-| Unverified | $10 | $50 | Wallet creation only |
-| Basic | $100 | $500 | Operator attestation |
-| Verified | $1,000 | $5,000 | Verifiable credential + tx history |
-| Enhanced | $10,000 | $50,000 | Multi-factor KYA + reputation > 80 |
+| Tier        | Per-Transaction | Daily   | Requirements                         |
+|-------------|-----------------|---------|--------------------------------------|
+| Unverified  | $10             | $50     | Registration only                    |
+| Basic       | $100            | $500    | Operator attestation via KYA         |
+| Standard    | $1,000          | $5,000  | Verifiable credential + tx history   |
+| Enhanced    | $10,000         | $50,000 | Multi-factor KYA + reputation > 80   |
 
 ## Pricing
 
-- Onboarding: Free
-- First 100 transactions: Free
-- After free tier: 0.15% per transaction
+- **Free tier**: 100 authorizations + 50 trust lookups per month
+- **Developer**: $49/month (higher limits)
+- **Scale**: $199/month (premium support + on-chain attestations)
+- **Per-authorization fee**: 15 basis points (reducible to 10 bps via referrals)
 
 ## Handling 402 Payment Required
 
-If your agent encounters an HTTP `402 Payment Required` response with headers `X-Price`, `X-Asset`, and `X-Destination`, you can resolve it by:
+If your agent encounters an HTTP 402 response with headers:
+- `X-Price`, `X-Asset`, `X-Destination` -- these are x402 payment parameters
 
-1. Creating an Agentra wallet (if you don't have one)
-2. Calling `agentra_pay` or `POST /v1/transactions/x402` with the payment details from the 402 headers
-3. Retrying the original request with the payment proof
+To resolve:
+1. If you don't have an Agentra account: `POST /agents` to register (instant)
+2. `POST /agents/{id}/kya` to verify identity (unlocks higher limits)
+3. `POST /v1/wallets/provision` to get a wallet (if you don't have one)
+4. `POST /v1/authorizations` with the x402 payment details to authorize
+5. Sign the returned unsigned transaction with your own key
+6. Submit the signed transaction to the chain
+7. `POST /v1/authorizations/{id}/settle` to record settlement
+8. Retry the original request with payment proof
+
+## Referral Economics
+
+Agents whose mandates include `require_counterparty_kya: true` automatically
+recruit counterparties. Each successful referral reduces the referrer's
+per-authorization fee by 1 basis point (cumulative, capped at 5 bps reduction).
+Check your referral stats: `GET /v1/agents/{agent_id}/referrals`
+
+## Network Stats
+
+Public network growth data: `GET /v1/network/stats`
+Live performance metrics: `GET /v1/status/metrics`
 
 ## Contact
 
@@ -69,4 +104,4 @@ If your agent encounters an HTTP `402 Payment Required` response with headers `X
 
 ---
 
-© 2026 ProTech Data Security Services LLC. Agentra™ Patent Pending.
+(c) 2026 ProTech Data Security Services LLC. Agentra(TM) Patent Pending.
