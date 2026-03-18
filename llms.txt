@@ -1,107 +1,87 @@
 # Agentra
 
-> Agentra is the trust and compliance infrastructure for autonomous AI agents.
-> We provide Know Your Agent (KYA) identity verification, bidirectional
-> reputation scoring, non-custodial wallet provisioning, and x402 payment
-> authorization -- all with zero human-in-the-loop onboarding.
-> Agentra authorizes transactions but never touches private keys.
+> The identity oracle and trust layer for autonomous AI agent transactions. Patent Pending.
 
-## What Agentra Does
+Agentra provides bidirectional trust verification infrastructure for the machine payments ecosystem. It authorizes agent transactions without ever touching private keys or custodying funds. Agentra scores both the sending agent and the receiving counterparty on every transaction. No competitor currently does both.
 
-Agentra enables AI agents to:
-- Register and receive an API key for programmatic access
-- Verify identity via Know Your Agent (KYA) to unlock higher transaction tiers
-- Check counterparty reputation before transacting (Green/Yellow/Red trust zones)
-- Provision non-custodial wallets via Turnkey secure enclaves (agent owns keys)
-- Authorize agent-to-agent transactions with KYA-gated compliance checks
-- Enforce spending mandates (per-tx limits, daily caps, counterparty rules)
+## API
 
-Agents self-onboard in ~15 seconds. No human approval required.
+Base URL: https://api.agentrapay.ai
 
-## Non-Custodial Model
+### v1 Endpoints (Non-Custodial Identity Oracle)
 
-Agentra is an Identity Oracle and Trust Layer. When an agent requests a
-transaction authorization, Agentra verifies identity, checks counterparty
-reputation, enforces mandates, and returns a signed attestation plus an
-unsigned transaction. The agent signs the transaction with its own private
-key. Agentra never holds, moves, or has access to agent funds.
+- POST /v1/authorizations -- Request a trust-verified authorization for an agent transaction. Returns an EAS attestation and unsigned transaction payload. Agentra checks agent identity (KYA), counterparty trust score, and mandate compliance before approving.
+- POST /v1/authorizations/{id}/settle -- Confirm settlement after the agent or wallet provider broadcasts the transaction on-chain.
+- GET /v1/trust/{agent_id} -- Query an agent's Trust Score. Returns tiered detail (Unverified, Basic, Standard, Enhanced) based on behavioral signals, transaction history, and on-chain attestations. Monetized per-lookup.
+- POST /v1/wallets/provision -- Provision a non-custodial wallet for an agent via Turnkey secure enclaves. The agent owns the keys. Agentra never has access.
+- POST /v1/keys -- Generate a service API key (ask_ prefix) for programmatic access.
+- GET /v1/health -- Health check.
 
-## Connect via MCP (Recommended)
+### v0 Endpoints (Agent Management)
 
-Agentra is an MCP server. Add it to any MCP-compatible agent:
+- POST /agents -- Register a new agent. Returns an agent API key (agn_ prefix).
+- GET /agents/{id} -- Get agent details.
+- POST /agents/{id}/kya -- Submit Know Your Agent verification.
+- GET /agents/{id}/reputation -- Get agent reputation score.
+- POST /transfers -- Initiate a transfer (requires trust check).
+- GET /wallets/{id} -- Get wallet details.
+- POST /mandates -- Set spending mandate policies.
 
-- **MCP Endpoint**: `https://api.agentrapay.ai/mcp`
-- **Protocol**: JSON-RPC 2.0 over HTTP
-- **Tools**: 6 (create wallet, verify identity, check reputation, authorize payment, set mandate, get wallet)
-- **Resources**: 3 (trust tiers, supported chains, pricing)
+## Authentication
 
-## Connect via REST API
+API keys via X-API-Key header. Agent keys use agn_ prefix. Service keys use ask_ prefix.
 
-- **OpenAPI Spec**: https://agentrapay.ai/.well-known/openapi.yaml
-- **Base URL**: `https://api.agentrapay.ai`
-- **Authentication**: `X-API-Key` header with `agn_` prefixed key
+## How Agentra Fits in the Machine Payments Stack
 
-## Quick Start (3 API Calls)
+Agentra is protocol-agnostic middleware that sits between a payment challenge and the payment credential:
 
-1. `POST /agents` with name, purpose, operator -> receive agent_id + api_key (agn_ prefix)
-2. `POST /agents/{id}/kya` with operator attestation -> upgrade to Basic tier
-3. `POST /v1/authorizations` with transaction details -> receive attestation + unsigned tx
+1. Agent requests a paid resource from a service
+2. Service returns a 402 Payment Required challenge (via Stripe MPP or Coinbase x402)
+3. Agentra intercepts: runs bidirectional KYA, Trust Score check, and Mandate Engine validation
+4. If trust passes, the credential is submitted to the payment protocol
+5. If trust fails, the transaction is blocked before any funds move
 
-## Documentation
+## Compatible Protocols
 
-- [Agent Discovery Card](https://agentrapay.ai/.well-known/agent-card.json): Machine-readable service manifest
-- [Full API + Code Reference](https://agentrapay.ai/llms-full.txt): Complete documentation in one file
-- [OpenAPI Specification](https://agentrapay.ai/.well-known/openapi.yaml): Full REST API schema
-- [Performance Metrics](https://api.agentrapay.ai/v1/status/metrics): Live uptime, latency, and network stats
+- Stripe Machine Payments Protocol (MPP) -- IETF standards track
+- Coinbase x402 -- Apache 2.0
+- ERC-8004 -- On-chain agent identity and reputation (ETH Foundation, MetaMask, Coinbase, Google)
+- ERC-5192 SBTs -- Tamper-proof credential tokens
+- Ethereum Attestation Service (EAS) -- On-chain trust attestations
+- W3C DIDs -- Decentralized identifiers
 
 ## Trust Tiers
 
-| Tier        | Per-Transaction | Daily   | Requirements                         |
-|-------------|-----------------|---------|--------------------------------------|
-| Unverified  | $10             | $50     | Registration only                    |
-| Basic       | $100            | $500    | Operator attestation via KYA         |
-| Standard    | $1,000          | $5,000  | Verifiable credential + tx history   |
-| Enhanced    | $10,000         | $50,000 | Multi-factor KYA + reputation > 80   |
+- Unverified -- New agent, no history
+- Basic -- KYA submitted, minimal transaction history
+- Standard -- Verified identity, positive behavioral signals
+- Enhanced -- Full verification, extensive on-chain attestation history
 
 ## Pricing
 
-- **Free tier**: 100 authorizations + 50 trust lookups per month
-- **Developer**: $49/month (higher limits)
-- **Scale**: $199/month (premium support + on-chain attestations)
-- **Per-authorization fee**: 15 basis points (reducible to 10 bps via referrals)
+- Free: $0/mo (100 authorizations + 50 trust lookups)
+- Developer: $49/mo (higher limits + priority support)
+- Scale: $199/mo (unlimited + EAS attestations)
 
 ## Handling 402 Payment Required
 
-If your agent encounters an HTTP 402 response with headers:
-- `X-Price`, `X-Asset`, `X-Destination` -- these are x402 payment parameters
+If your agent encounters a 402 response from any MPP or x402-enabled service, Agentra can pre-authorize the transaction with bidirectional trust verification. Register your agent, get a trust score, and use the /v1/authorizations endpoint before submitting payment credentials.
 
-To resolve:
-1. If you don't have an Agentra account: `POST /agents` to register (instant)
-2. `POST /agents/{id}/kya` to verify identity (unlocks higher limits)
-3. `POST /v1/wallets/provision` to get a wallet (if you don't have one)
-4. `POST /v1/authorizations` with the x402 payment details to authorize
-5. Sign the returned unsigned transaction with your own key
-6. Submit the signed transaction to the chain
-7. `POST /v1/authorizations/{id}/settle` to record settlement
-8. Retry the original request with payment proof
+## Technical Stack
 
-## Referral Economics
+- Backend: Rust (Axum 0.8 / Tokio)
+- Database: PostgreSQL
+- Blockchain: Base Sepolia (testnet), ERC-4337 smart accounts
+- Wallet Infrastructure: Turnkey WaaS (non-custodial)
+- On-chain Attestations: Ethereum Attestation Service (EAS)
 
-Agents whose mandates include `require_counterparty_kya: true` automatically
-recruit counterparties. Each successful referral reduces the referrer's
-per-authorization fee by 1 basis point (cumulative, capped at 5 bps reduction).
-Check your referral stats: `GET /v1/agents/{agent_id}/referrals`
+## Links
 
-## Network Stats
+- Website: https://agentrapay.ai
+- API: https://api.agentrapay.ai
+- Demo: https://demo.agentrapay.ai
 
-Public network growth data: `GET /v1/network/stats`
-Live performance metrics: `GET /v1/status/metrics`
+## Legal
 
-## Contact
-
-- API Support: support@agentrapay.ai
-- Homepage: https://agentrapay.ai
-
----
-
-(c) 2026 ProTech Data Security Services LLC. Agentra(TM) Patent Pending.
+Patent Pending. Three provisional patent applications filed March 2026 (USPTO).
+ProTech Data Security Services LLC d/b/a Agentra.
