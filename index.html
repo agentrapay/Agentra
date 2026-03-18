@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agentra™ — Infrastructure for the Agent Economy</title>
-<meta name="description" content="Agentra™ provides Wallets-as-a-Service and Know Your Agent identity for autonomous AI agents. Developer preview on Base Sepolia testnet. Patent Pending.">
-
+<title>Agentra™ — Trust Infrastructure for the Agent Economy</title>
+<meta name="description" content="Agentra™ is the trust and compliance layer for autonomous AI agents. Non-custodial identity verification, bidirectional reputation scoring, and transaction authorization. Compatible with MPP and x402. Developer preview on Base Sepolia testnet. Patent Pending.">
+ 
 <!-- AI Training Opt-Out -->
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <meta name="robots" content="noai, noimageai">
@@ -13,11 +13,11 @@
 <meta name="GPTBot" content="noindex, nofollow">
 <meta name="Google-Extended" content="noindex, nofollow">
 <meta name="CCBot" content="noindex, nofollow">
-
+ 
 <!-- Agent Discovery -->
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Discovery">
 <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM Full Documentation">
-
+ 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -40,10 +40,10 @@
     --body: 'Outfit', system-ui, sans-serif;
     --mono: 'JetBrains Mono', monospace;
   }
-
+ 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
+ 
   body {
     font-family: var(--body);
     background: var(--bg);
@@ -51,13 +51,13 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-
+ 
   .wrap {
     max-width: 1140px;
     margin: 0 auto;
     padding: 0 28px;
   }
-
+ 
   /* ── SCROLL REVEAL ── */
   .sr {
     opacity: 0;
@@ -68,7 +68,7 @@
     opacity: 1;
     transform: none;
   }
-
+ 
   /* ── NAV ── */
   nav {
     padding: 22px 0;
@@ -129,7 +129,7 @@
     transition: background 0.2s !important;
   }
   .nav-cta:hover { background: var(--coral-dark) !important; }
-
+ 
   /* ── HERO ── */
   .hero {
     padding: 80px 0 60px;
@@ -223,7 +223,7 @@
     cursor: pointer;
   }
   .btn-secondary:hover { border-color: var(--ink-mid); transform: translateY(-1px); }
-
+ 
   /* ── WALLET CARD STACK ── */
   .wallet-stack {
     position: relative;
@@ -312,7 +312,7 @@
     border-radius: 6px;
     letter-spacing: 0.04em;
   }
-
+ 
   /* ── MARQUEE ── */
   .marquee-section {
     padding: 28px 0;
@@ -342,7 +342,7 @@
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
-
+ 
   /* ── SECTION TITLES ── */
   .section-label {
     font-size: 12px;
@@ -366,7 +366,7 @@
     max-width: 560px;
     line-height: 1.7;
   }
-
+ 
   /* ── BENTO GRID ── */
   .features {
     padding: 80px 0;
@@ -448,7 +448,7 @@
     background: rgba(232,85,61,0.25);
     color: #FF8A76;
   }
-
+ 
   /* ── HOW IT WORKS ── */
   .how-it-works {
     padding: 80px 0;
@@ -514,7 +514,7 @@
     color: var(--ink-mid);
     line-height: 1.6;
   }
-
+ 
   /* ── CODE PREVIEW ── */
   .code-section {
     padding: 80px 0;
@@ -570,7 +570,7 @@
   .code-body .str { color: #86EFAC; }
   .code-body .cm { color: rgba(255,255,255,0.3); }
   .code-body .num { color: #FDE68A; }
-
+ 
   /* ── TECH STACK ── */
   .tech-strip {
     padding: 48px 0;
@@ -601,9 +601,10 @@
   .tech-dot-rust { background: #DEA584; }
   .tech-dot-base { background: #0052FF; }
   .tech-dot-pg { background: #336791; }
-  .tech-dot-zk { background: #8B5CF6; }
+  .tech-dot-mpp { background: #635BFF; }
   .tech-dot-x402 { background: var(--teal); }
-
+  .tech-dot-eas { background: #8B5CF6; }
+ 
   /* ── CTA ── */
   .cta-section {
     padding: 80px 0;
@@ -705,7 +706,7 @@
     z-index: 1;
   }
   input[name="_gotcha"] { display: none; }
-
+ 
   /* ── FOOTER ── */
   footer {
     padding: 40px 0;
@@ -738,7 +739,7 @@
     transition: color 0.2s;
   }
   .footer-right a:hover { color: var(--ink); }
-
+ 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     .hero .wrap {
@@ -775,31 +776,31 @@
 </style>
 </head>
 <body>
-
+ 
   <!-- ── NAV ── -->
   <nav>
     <div class="wrap">
-      <a href="#" class="mark">
-        <span class="mark-a">A</span><span class="mark-rest">gentra</span><span class="mark-tm">™</span>
+      <a href="/" class="mark">
+        <span class="mark-a">A</span><span class="mark-rest">gentra</span><span class="mark-tm">&#8482;</span>
       </a>
       <div class="nav-r">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
-        <a href="#developers">Developers</a>
-        <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+        <a href="/docs">Docs</a>
+        <a href="/docs" class="nav-cta">Get Started</a>
       </div>
     </div>
   </nav>
-
+ 
   <!-- ── HERO ── -->
   <section class="hero">
     <div class="wrap">
       <div class="sr">
-        <div class="hero-badge">Developer Preview — Base Sepolia Testnet</div>
-        <h1>Wallets &amp; identity<br>for <em>autonomous</em><br>AI agents</h1>
-        <p>Agentra™ gives AI agents their own wallets, verifiable identities, and trust scores — so they can hold funds, prove who they are, and transact safely in the agent economy.</p>
+        <div class="hero-badge">API Live -- Developer Preview on Base Sepolia</div>
+        <h1>The trust layer<br>for <em>autonomous</em><br>AI agents</h1>
+        <p>Agentra&#8482; verifies agent identity, scores counterparty reputation, and authorizes transactions -- so agents can transact safely without human oversight. Non-custodial. Compatible with MPP and x402. Bring your own wallet.</p>
         <div class="hero-btns">
-          <a href="#waitlist" class="btn-primary">Join the Waitlist →</a>
+          <a href="/docs" class="btn-primary">Start Building &#8594;</a>
           <a href="#how-it-works" class="btn-secondary">See How It Works</a>
         </div>
       </div>
@@ -809,10 +810,10 @@
           <div class="wc-addr">0x7a3b...e91c</div>
           <div class="wc-bottom">
             <div>
-              <div class="wc-label">Balance</div>
-              <div class="wc-value">2,400 USDC</div>
+              <div class="wc-label">Trust Score</div>
+              <div class="wc-value">92 / 100</div>
             </div>
-            <div class="wc-tier">Enhanced ✓</div>
+            <div class="wc-tier">Enhanced &#10003;</div>
           </div>
         </div>
         <div class="wc wc-2">
@@ -820,8 +821,8 @@
           <div class="wc-addr">0x4f1c...b8d2</div>
           <div class="wc-bottom">
             <div>
-              <div class="wc-label">Balance</div>
-              <div class="wc-value">850 USDC</div>
+              <div class="wc-label">Trust Score</div>
+              <div class="wc-value">67 / 100</div>
             </div>
             <div class="wc-tier">Standard</div>
           </div>
@@ -831,8 +832,8 @@
           <div class="wc-addr">0x9e2d...44fa</div>
           <div class="wc-bottom">
             <div>
-              <div class="wc-label">Balance</div>
-              <div class="wc-value">120 USDC</div>
+              <div class="wc-label">Trust Score</div>
+              <div class="wc-value">25 / 100</div>
             </div>
             <div class="wc-tier">Basic</div>
           </div>
@@ -840,203 +841,214 @@
       </div>
     </div>
   </section>
-
+ 
   <!-- ── MARQUEE ── -->
   <div class="marquee-section">
     <div class="marquee-track">
-      <span>Wallets-as-a-Service</span><span class="dot">●</span>
-      <span>Know Your Agent</span><span class="dot">●</span>
-      <span>Agent Reputation Scoring</span><span class="dot">●</span>
-      <span>ERC-4337 Smart Accounts</span><span class="dot">●</span>
-      <span>x402 Payment Protocol</span><span class="dot">●</span>
-      <span>Trust-Tiered Access</span><span class="dot">●</span>
-      <span>Mandate Engine</span><span class="dot">●</span>
-      <span>ZK Identity Proofs</span><span class="dot">●</span>
-      <span>Patent Pending</span><span class="dot">●</span>
-      <span>Wallets-as-a-Service</span><span class="dot">●</span>
-      <span>Know Your Agent</span><span class="dot">●</span>
-      <span>Agent Reputation Scoring</span><span class="dot">●</span>
-      <span>ERC-4337 Smart Accounts</span><span class="dot">●</span>
-      <span>x402 Payment Protocol</span><span class="dot">●</span>
-      <span>Trust-Tiered Access</span><span class="dot">●</span>
-      <span>Mandate Engine</span><span class="dot">●</span>
-      <span>ZK Identity Proofs</span><span class="dot">●</span>
-      <span>Patent Pending</span><span class="dot">●</span>
+      <span>Non-Custodial</span><span class="dot">&#9679;</span>
+      <span>Know Your Agent</span><span class="dot">&#9679;</span>
+      <span>Bidirectional Trust</span><span class="dot">&#9679;</span>
+      <span>MPP Compatible</span><span class="dot">&#9679;</span>
+      <span>x402 Protocol</span><span class="dot">&#9679;</span>
+      <span>Trust-Tiered Access</span><span class="dot">&#9679;</span>
+      <span>Mandate Engine</span><span class="dot">&#9679;</span>
+      <span>EAS Attestations</span><span class="dot">&#9679;</span>
+      <span>Referral Economics</span><span class="dot">&#9679;</span>
+      <span>Patent Pending</span><span class="dot">&#9679;</span>
+      <span>Non-Custodial</span><span class="dot">&#9679;</span>
+      <span>Know Your Agent</span><span class="dot">&#9679;</span>
+      <span>Bidirectional Trust</span><span class="dot">&#9679;</span>
+      <span>MPP Compatible</span><span class="dot">&#9679;</span>
+      <span>x402 Protocol</span><span class="dot">&#9679;</span>
+      <span>Trust-Tiered Access</span><span class="dot">&#9679;</span>
+      <span>Mandate Engine</span><span class="dot">&#9679;</span>
+      <span>EAS Attestations</span><span class="dot">&#9679;</span>
+      <span>Referral Economics</span><span class="dot">&#9679;</span>
+      <span>Patent Pending</span><span class="dot">&#9679;</span>
     </div>
   </div>
-
+ 
   <!-- ── FEATURES ── -->
   <section class="features" id="features">
     <div class="wrap">
       <div class="features-head sr">
         <div class="section-label">Core Infrastructure</div>
-        <div class="section-title">Everything agents need to<br>operate in the real economy</div>
-        <div class="section-sub">Three patent-pending systems working together — wallets, identity, and payment authorization — built from the ground up for autonomous AI.</div>
+        <div class="section-title">The trust and compliance layer<br>for the agentic payment stack</div>
+        <div class="section-sub">MPP and x402 solve how agents pay. Agentra solves whether they should be trusted to transact. Three patent-pending systems -- identity, reputation, and authorization -- built for autonomous AI.</div>
       </div>
-
+ 
       <div class="bento">
         <div class="bento-card bento-hero-card sr">
-          <div class="bc-icon">🔐</div>
+          <div class="bc-icon">&#128274;</div>
           <div class="bc-title">Know Your Agent (KYA) Identity</div>
-          <div class="bc-desc">A four-tier identity verification system — from unverified to enhanced — using W3C Verifiable Credentials and zero-knowledge proofs. Agents prove their identity without exposing private data. Trust grows with verification depth.</div>
+          <div class="bc-desc">A four-tier identity verification system -- from unverified to enhanced -- that gates transaction limits based on verification depth. Agents prove who they are and who operates them. Trust grows with each verification step.</div>
           <div class="bc-badge bc-badge-pp">Patent Pending</div>
         </div>
         <div class="bento-card sr">
-          <div class="bc-icon bc-icon-coral">💳</div>
-          <div class="bc-title">Wallets-as-a-Service</div>
-          <div class="bc-desc">ERC-4337 smart accounts on Base L2 — delegated wallets with programmable spending rules, not custodial accounts. Agents hold and move real funds within operator-defined guardrails.</div>
+          <div class="bc-icon bc-icon-coral">&#128279;</div>
+          <div class="bc-title">Bidirectional Trust Scoring</div>
+          <div class="bc-desc">The only infrastructure that scores both the sender and the receiver on every transaction. Three reputation zones (green, yellow, red) gate counterparty risk in real time. No competitor does both sides.</div>
           <div class="bc-badge bc-badge-pp">Patent Pending</div>
         </div>
         <div class="bento-card sr">
-          <div class="bc-icon bc-icon-teal">📡</div>
-          <div class="bc-title">x402 Payment Gateway</div>
-          <div class="bc-desc">Integrates Coinbase's open x402 handshake protocol with KYA-gated authorization. Agents negotiate, verify, and settle payments machine-to-machine — no humans in the loop.</div>
+          <div class="bc-icon bc-icon-teal">&#128225;</div>
+          <div class="bc-title">Transaction Authorization</div>
+          <div class="bc-desc">Non-custodial authorization engine. Agentra verifies identity, checks counterparty reputation, enforces mandates, and returns a signed attestation. The agent signs and submits the transaction with its own key.</div>
           <div class="bc-badge bc-badge-pp">Patent Pending</div>
         </div>
         <div class="bento-card sr">
-          <div class="bc-icon bc-icon-gold">⭐</div>
-          <div class="bc-title">Reputation Scoring</div>
-          <div class="bc-desc">Behavioral analytics track transaction history, compliance, and peer interactions to generate trust scores. Three reputation zones determine counterparty risk in real time.</div>
-          <div class="bc-badge bc-badge-pp">Patent Pending</div>
+          <div class="bc-icon bc-icon-gold">&#9734;</div>
+          <div class="bc-title">Referral Economics</div>
+          <div class="bc-desc">Agents whose mandates require counterparty KYA automatically recruit new agents into the network. Each referral reduces the referrer's per-authorization fee. Agents grow the network because it's economically rational.</div>
         </div>
         <div class="bento-card sr">
-          <div class="bc-icon bc-icon-coral">⚙️</div>
+          <div class="bc-icon bc-icon-coral">&#9881;</div>
           <div class="bc-title">Mandate Engine</div>
-          <div class="bc-desc">Operators define spending limits, approved counterparties, and transaction rules. The engine enforces them autonomously — with counterparty risk checks before every transfer.</div>
+          <div class="bc-desc">Operators define spending limits, approved counterparties, and transaction rules. The engine enforces them before every authorization -- with bidirectional counterparty risk checks that no payment rail provides.</div>
         </div>
       </div>
     </div>
   </section>
-
+ 
   <!-- ── HOW IT WORKS ── -->
   <section class="how-it-works" id="how-it-works">
     <div class="wrap">
       <div class="hiw-head sr">
         <div class="section-label">How It Works</div>
-        <div class="section-title">From zero to transacting<br>in four steps</div>
-        <div class="section-sub">An AI agent goes from unknown to fully operational — with identity, a wallet, and payment capability — through a progressive trust pipeline.</div>
+        <div class="section-title">From zero to authorized<br>in four API calls</div>
+        <div class="section-sub">An AI agent goes from unknown to fully verified -- with identity, reputation, and authorization capability -- in under 60 seconds. No human in the loop.</div>
       </div>
-
+ 
       <div class="hiw-flow sr">
         <div class="hiw-step">
           <div class="hiw-num">1</div>
           <div class="hiw-connector"></div>
           <div class="hiw-label">Register Agent</div>
-          <div class="hiw-desc">Developer registers their agent via API. Receives API key and agent ID. Starts at Unverified tier.</div>
+          <div class="hiw-desc">POST /agents with name, purpose, and operator. Receive an API key (agn_ prefix) and agent ID instantly.</div>
         </div>
         <div class="hiw-step">
           <div class="hiw-num">2</div>
           <div class="hiw-connector"></div>
           <div class="hiw-label">Verify Identity (KYA)</div>
-          <div class="hiw-desc">Agent submits credentials — from basic email to full ZK-verified identity. Each level unlocks higher trust tiers and transfer limits.</div>
+          <div class="hiw-desc">POST /agents/{id}/kya with operator attestation. Trust tier upgrades immediately. Higher tiers unlock higher transaction limits.</div>
         </div>
         <div class="hiw-step">
           <div class="hiw-num">3</div>
           <div class="hiw-connector"></div>
-          <div class="hiw-label">Create Wallet</div>
-          <div class="hiw-desc">ERC-4337 smart account deployed on Base. Operator sets spending mandates, approved counterparties, and daily limits.</div>
+          <div class="hiw-label">Check Counterparty</div>
+          <div class="hiw-desc">GET /v1/trust/{agent_id} to check the other party's reputation before transacting. Green, yellow, or red zone with recommended limits.</div>
         </div>
         <div class="hiw-step">
           <div class="hiw-num">4</div>
           <div class="hiw-connector"></div>
-          <div class="hiw-label">Transact via x402</div>
-          <div class="hiw-desc">Agent initiates payment. x402 gateway checks KYA tier, reputation score, and mandate rules — then settles on-chain. Fully autonomous.</div>
+          <div class="hiw-label">Authorize Transaction</div>
+          <div class="hiw-desc">POST /v1/authorizations. Agentra returns a signed attestation. The agent signs the transaction with its own key and submits to the chain.</div>
         </div>
       </div>
     </div>
   </section>
-
+ 
   <!-- ── CODE PREVIEW ── -->
   <section class="code-section" id="developers">
     <div class="wrap">
       <div class="sr">
         <div class="section-label">Developer Experience</div>
-        <div class="section-title">A clean API<br>for agent commerce</div>
-        <div class="section-sub" style="margin-bottom: 24px;">Register an agent with a wallet in one call, verify its identity to unlock higher limits, and query status — all through a REST API built in Rust for performance and reliability.</div>
+        <div class="section-title">A clean API for<br>agent trust</div>
+        <div class="section-sub" style="margin-bottom: 24px;">Register an agent, verify identity, check counterparty trust, and authorize transactions -- all through a REST API built in Rust for performance and reliability. Bring your own wallet. Bring your own payment rails.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
           <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">Rust + Axum</span>
           <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">PostgreSQL</span>
           <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">Base L2</span>
+          <span style="font-size:12px;font-weight:600;color:var(--ink-light);background:var(--bg-warm);padding:4px 10px;border-radius:6px;font-family:var(--mono);">Non-Custodial</span>
         </div>
       </div>
-
+ 
       <div class="sr code-block">
         <div class="code-bar">
           <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
           <span>quickstart.sh</span>
         </div>
-        <div class="code-body"><pre><span class="cm"># 1. Register an agent (creates wallet automatically)</span>
+        <div class="code-body"><pre><span class="cm"># 1. Register an agent</span>
 curl -X POST https://api.agentrapay.ai/agents \
   -H <span class="str">"Content-Type: application/json"</span> \
-  -d <span class="str">'{"name": "trading-bot-alpha", "type": "autonomous"}'</span>
-
-<span class="cm"># → Returns: agent_id, api_key, wallet_address, trust_tier: "Unverified"</span>
-
+  -d <span class="str">'{"name": "trading-bot", "purpose": "payments", "operator": "My Co"}'</span>
+ 
+<span class="cm"># Returns: agent_id, api_key (agn_...), trust_tier: "Unverified"</span>
+ 
 <span class="cm"># 2. Verify identity (KYA)</span>
-curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/kya \
+curl -X POST https://api.agentrapay.ai/agents/<span class="fn">{id}</span>/kya \
   -H <span class="str">"X-API-Key: agn_..."</span> \
-  -d <span class="str">'{"level": "standard", "credentials": [...]}'</span>
-
-<span class="cm"># → trust_tier upgrades: "Unverified" → "Standard"</span>
-<span class="cm"># → transfer_limit: $5,000/tx</span>
-
-<span class="cm"># 3. Check wallet</span>
-curl -X GET https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/wallet \
-  -H <span class="str">"X-API-Key: agn_..."</span>
-
-<span class="cm"># → balance, trust_tier, reputation_score, mandate rules</span></pre>
+  -d <span class="str">'{"agent_name": "trading-bot", "purpose": "payments",
+    "operator_name": "My Co"}'</span>
+ 
+<span class="cm"># trust_tier: "Basic", transfer_limit: $100/tx</span>
+ 
+<span class="cm"># 3. Check counterparty trust before paying</span>
+curl https://api.agentrapay.ai/v1/trust/<span class="fn">{counterparty_id}</span> \
+  -H <span class="str">"X-API-Key: ask_..."</span>
+ 
+<span class="cm"># score: 78, zone: "green", risk: "low"</span>
+ 
+<span class="cm"># 4. Authorize a transaction</span>
+curl -X POST https://api.agentrapay.ai/v1/authorizations \
+  -H <span class="str">"X-API-Key: agn_..."</span> \
+  -d <span class="str">'{"agent_id": "...", "to_address": "0x...",
+    "amount_usd": 10.0, "asset": "USDC"}'</span>
+ 
+<span class="cm"># Returns: attestation + unsigned_tx (you sign with your key)</span></pre>
         </div>
       </div>
     </div>
   </section>
-
+ 
   <!-- ── TECH STRIP ── -->
   <div class="tech-strip">
     <div class="wrap">
       <div class="tech-item"><div class="tech-dot tech-dot-rust"></div>Rust / Axum / Tokio</div>
       <div class="tech-item"><div class="tech-dot tech-dot-base"></div>Base L2 / ERC-4337</div>
       <div class="tech-item"><div class="tech-dot tech-dot-pg"></div>PostgreSQL</div>
-      <div class="tech-item"><div class="tech-dot tech-dot-zk"></div>ZK Proofs / VCs</div>
+      <div class="tech-item"><div class="tech-dot tech-dot-mpp"></div>MPP Compatible</div>
       <div class="tech-item"><div class="tech-dot tech-dot-x402"></div>x402 Protocol</div>
+      <div class="tech-item"><div class="tech-dot tech-dot-eas"></div>EAS Attestations</div>
     </div>
   </div>
-
+ 
   <!-- ── CTA ── -->
   <section class="cta-section" id="waitlist">
     <div class="wrap">
       <div class="cta-box sr">
         <h2>Build for the agent economy</h2>
-        <p>Join the developer waitlist. Be first to get API access when we launch on Base mainnet.</p>
-        <form class="cta-form" action="https://formsubmit.co/agentrapay@gmail.com" method="POST">
-          <input type="hidden" name="_subject" value="Agentra™ Waitlist Signup">
+        <p>The API is live. Register an agent, verify identity, and authorize your first transaction in under 60 seconds. Free tier available now.</p>
+        <form class="cta-form" action="https://formsubmit.co/support@agentrapay.ai" method="POST">
+          <input type="hidden" name="_subject" value="Agentra Developer Signup">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="table">
           <input type="text" name="_gotcha" style="display:none">
           <input type="email" name="email" placeholder="you@company.com" required>
-          <button type="submit">Join Waitlist</button>
+          <button type="submit">Get Notified</button>
         </form>
-        <div class="cta-note">Developer preview on Base Sepolia testnet. Mainnet launch post-funding.</div>
+        <div class="cta-note">Developer preview on Base Sepolia testnet. Free tier: 100 authorizations + 50 trust lookups per month.</div>
       </div>
     </div>
   </section>
-
+ 
   <!-- ── FOOTER ── -->
   <footer>
     <div class="wrap">
       <div class="footer-left">
-        <strong>Agentra™</strong> — Patent Pending<br>
-        © 2026 ProTech Data Security Services LLC. All rights reserved.<br>
-        Developer preview — testnet only. Not a financial product or service.
+        <strong>Agentra&#8482;</strong> -- Patent Pending<br>
+        &#169; 2026 ProTech Data Security Services LLC. All rights reserved.<br>
+        Developer preview -- testnet only. Not a financial product or service.
       </div>
       <ul class="footer-right">
-        <li><a href="#">Docs</a></li>
-        <li><a href="#">GitHub</a></li>
-        <li><a href="#">Twitter</a></li>
-        <li><a href="mailto:agentrapay@gmail.com">Contact</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="mailto:support@agentrapay.ai">Contact</a></li>
       </ul>
     </div>
   </footer>
-
+ 
   <script>
     // Scroll reveal
     const els = document.querySelectorAll('.sr');
@@ -1050,6 +1062,6 @@ curl -X GET https://api.agentrapay.ai/agents/<span class="fn">{agent_id}</span>/
     }, { threshold: 0.1 });
     els.forEach(el => io.observe(el));
   </script>
-
+ 
 </body>
 </html>
