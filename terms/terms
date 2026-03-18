@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | Agentra™</title>
+    <meta name="description" content="Terms of Service for the Agentra developer preview API.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1A1A2E;
+            --coral: #E8553D;
+            --teal: #1B9E8C;
+            --cream: #FAF7F2;
+            --text: #2c2c3a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        nav {
+            background: var(--navy);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a { color: var(--cream); text-decoration: none; }
+        nav .logo { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 600; }
+        nav .links { display: flex; gap: 1.5rem; font-size: 0.9rem; }
+        nav .links a:hover { color: var(--coral); }
+        .hero {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+        .hero h1 { font-family: 'Lora', serif; font-size: 2rem; font-weight: 600; }
+        .hero p { color: #a0a0b8; font-size: 0.95rem; margin-top: 0.5rem; }
+        .content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+        h2 {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 2rem 0 0.5rem;
+        }
+        p, li { margin-bottom: 0.75rem; font-size: 0.95rem; }
+        ol, ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+        a { color: var(--teal); }
+        footer {
+            background: var(--navy);
+            color: #8080a0;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        footer a { color: var(--teal); text-decoration: none; }
+    </style>
+</head>
+<body>
+ 
+<nav>
+    <a href="/" class="logo">Agentra™</a>
+    <div class="links">
+        <a href="/">Home</a>
+        <a href="/docs">Docs</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+    </div>
+</nav>
+ 
+<div class="hero">
+    <h1>Terms of Service</h1>
+    <p>Effective: March 17, 2026 | Last updated: March 17, 2026</p>
+</div>
+ 
+<div class="content">
+ 
+<p>These Terms of Service ("Terms") govern your access to and use of the Agentra API, website, and related services (collectively, the "Service") operated by ProTech Data Security Services LLC d/b/a Agentra ("Agentra," "we," "us," or "our"), an Oregon limited liability company.</p>
+ 
+<p>By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, do not use the Service.</p>
+ 
+<h2>1. Developer Preview</h2>
+ 
+<p>The Service is currently a <strong>developer preview</strong> operating on Base Sepolia testnet. No real funds are involved. Features, endpoints, pricing, and availability may change without notice. The Service is provided for evaluation, testing, and development purposes.</p>
+ 
+<h2>2. Description of Service</h2>
+ 
+<p>Agentra provides trust and compliance infrastructure for autonomous AI agents, including:</p>
+<ul>
+    <li>Agent registration and API key management</li>
+    <li>Know Your Agent (KYA) identity verification</li>
+    <li>Bidirectional reputation scoring</li>
+    <li>Non-custodial wallet provisioning via third-party providers</li>
+    <li>Transaction authorization and attestation</li>
+    <li>Trust score lookups</li>
+</ul>
+ 
+<h2>3. Non-Custodial Architecture</h2>
+ 
+<p>Agentra operates as an identity oracle and trust layer. Agentra does <strong>not</strong>:</p>
+<ul>
+    <li>Hold, custody, or control any private keys</li>
+    <li>Move, transfer, or transmit funds on behalf of users or agents</li>
+    <li>Act as a money transmitter, payment processor, or financial institution</li>
+</ul>
+<p>Wallets provisioned through the Service are created via third-party infrastructure providers (currently Turnkey). Users and their agents are solely responsible for securing private keys and signing transactions.</p>
+ 
+<h2>4. Account Registration</h2>
+ 
+<p>To use the Service, you register an agent via the API. You are responsible for:</p>
+<ul>
+    <li>Providing accurate registration information</li>
+    <li>Safeguarding your API key (it is shown only once at registration)</li>
+    <li>All activity that occurs under your API key</li>
+    <li>Notifying us if you believe your API key has been compromised</li>
+</ul>
+ 
+<h2>5. Acceptable Use</h2>
+ 
+<p>You agree not to use the Service to:</p>
+<ul>
+    <li>Violate any applicable law or regulation</li>
+    <li>Facilitate money laundering, terrorist financing, or sanctions evasion</li>
+    <li>Attempt to circumvent rate limits, trust tiers, or mandate restrictions</li>
+    <li>Submit false or misleading KYA verification data</li>
+    <li>Reverse-engineer, decompile, or attempt to extract source code from the Service</li>
+    <li>Interfere with or disrupt the Service or its infrastructure</li>
+    <li>Use the Service to compete directly with Agentra without written permission</li>
+</ul>
+ 
+<h2>6. API Usage and Rate Limits</h2>
+ 
+<p>The Service operates on tiered plans with usage limits. Free tier includes 100 authorizations and 50 trust lookups per month. Exceeding plan limits may result in rate limiting or temporary suspension of access. We reserve the right to modify plan limits and pricing with 30 days' notice.</p>
+ 
+<h2>7. Fees and Payment</h2>
+ 
+<p>During the developer preview, the free tier is available at no cost. Paid tiers (Developer at $49/month, Scale at $199/month) and per-authorization fees (15 basis points, reducible to 10 bps via referrals) will be charged to the payment method on file when activated. All fees are non-refundable except as required by law.</p>
+ 
+<h2>8. Intellectual Property</h2>
+ 
+<p>The Service, including its API design, documentation, trust scoring algorithms, and attestation protocol, is the intellectual property of ProTech Data Security Services LLC. Agentra and related marks are trademarks of ProTech Data Security Services LLC. Patent pending.</p>
+ 
+<p>You retain ownership of any data you submit through the Service. By using the Service, you grant us a limited license to process your data as necessary to provide the Service.</p>
+ 
+<h2>9. Data and Privacy</h2>
+ 
+<p>Our collection and use of personal and agent data is governed by our <a href="/privacy">Privacy Policy</a>, which is incorporated into these Terms by reference.</p>
+ 
+<h2>10. Disclaimers</h2>
+ 
+<p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+ 
+<p>We do not warrant that:</p>
+<ul>
+    <li>The Service will be uninterrupted, error-free, or secure</li>
+    <li>Trust scores, attestations, or reputation data are accurate or complete</li>
+    <li>The Service will meet your specific requirements</li>
+    <li>Any defects will be corrected</li>
+</ul>
+ 
+<p>Blockchain transactions are irreversible. Agentra is not responsible for the outcome of any on-chain transaction, regardless of whether Agentra issued an authorization or attestation for that transaction.</p>
+ 
+<h2>11. Limitation of Liability</h2>
+ 
+<p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, AGENTRA SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE SERVICE.</p>
+ 
+<p>OUR TOTAL LIABILITY FOR ALL CLAIMS ARISING FROM THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE HUNDRED DOLLARS ($100), WHICHEVER IS GREATER.</p>
+ 
+<h2>12. Indemnification</h2>
+ 
+<p>You agree to indemnify and hold harmless Agentra, its officers, directors, employees, and agents from any claims, damages, losses, or expenses (including reasonable attorneys' fees) arising from your use of the Service or violation of these Terms.</p>
+ 
+<h2>13. Termination</h2>
+ 
+<p>We may suspend or terminate your access to the Service at any time, with or without cause, with or without notice. Upon termination, your API keys are immediately invalidated. Provisions that by their nature should survive termination will survive, including Sections 8, 10, 11, 12, and 14.</p>
+ 
+<h2>14. Governing Law</h2>
+ 
+<p>These Terms are governed by the laws of the State of Oregon, without regard to conflict of law principles. Any disputes arising from these Terms or the Service shall be resolved in the state or federal courts located in Jackson County, Oregon.</p>
+ 
+<h2>15. Changes to Terms</h2>
+ 
+<p>We may update these Terms at any time. Changes take effect when posted. Continued use of the Service after changes constitutes acceptance. Material changes will be communicated via the API health endpoint or email if provided.</p>
+ 
+<h2>16. Contact</h2>
+ 
+<p>For questions about these Terms, contact us at <a href="mailto:support@agentrapay.ai">support@agentrapay.ai</a>.</p>
+ 
+<p style="margin-top: 2rem; color: #8080a0; font-size: 0.85rem;">ProTech Data Security Services LLC d/b/a Agentra, Ashland, Oregon. Agentra™ Patent Pending.</p>
+ 
+</div>
+ 
+<footer>
+    <p>&copy; 2026 ProTech Data Security Services LLC. Agentra&trade; Patent Pending.</p>
+    <p style="margin-top: 0.5rem;">
+        <a href="/terms">Terms of Service</a> &nbsp;|&nbsp;
+        <a href="/privacy">Privacy Policy</a> &nbsp;|&nbsp;
+        <a href="/docs">Documentation</a>
+    </p>
+</footer>
+ 
+</body>
+</html>
