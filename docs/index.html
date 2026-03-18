@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started | Agentra™</title>
+    <meta name="description" content="Get your AI agent onboarded to Agentra in under 60 seconds. Register, verify identity, provision a wallet, and authorize transactions.">
+    <meta name="robots" content="index, follow">
+    <meta name="GPTBot" content="noindex, nofollow">
+    <meta name="Google-Extended" content="noindex, nofollow">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Discovery">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Lora:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1A1A2E;
+            --coral: #E8553D;
+            --teal: #1B9E8C;
+            --cream: #FAF7F2;
+            --code-bg: #0f0f1a;
+            --code-border: #2a2a3e;
+            --text: #2c2c3a;
+            --muted: #6b6b7b;
+        }
+ 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.7;
+        }
+ 
+        nav {
+            background: var(--navy);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        nav a { color: var(--cream); text-decoration: none; }
+        nav .logo { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 600; }
+        nav .links { display: flex; gap: 1.5rem; font-size: 0.9rem; }
+        nav .links a:hover { color: var(--coral); }
+ 
+        .hero {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+ 
+        .hero h1 {
+            font-family: 'Lora', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+ 
+        .hero p {
+            color: #a0a0b8;
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+ 
+        .content {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+ 
+        h2 {
+            font-family: 'Lora', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 2.5rem 0 0.75rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0ddd6;
+        }
+ 
+        h2:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+ 
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 1.5rem 0 0.5rem;
+        }
+ 
+        p { margin-bottom: 1rem; }
+ 
+        .step-badge {
+            display: inline-block;
+            background: var(--coral);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+ 
+        .time-badge {
+            display: inline-block;
+            background: var(--teal);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+        }
+ 
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 0.75rem 0 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #c8c8d8;
+        }
+ 
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+ 
+        p code, li code {
+            background: #eae7e0;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.82em;
+            color: var(--navy);
+        }
+ 
+        .comment { color: #5a6a5a; }
+        .string { color: #89b889; }
+        .key { color: #8ab8d8; }
+        .url { color: #d8a878; }
+ 
+        .response-block {
+            background: #f5f3ee;
+            border: 1px solid #e0ddd6;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+ 
+        .warning {
+            background: #fff3e0;
+            border-left: 3px solid var(--coral);
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border-radius: 0 4px 4px 0;
+        }
+ 
+        .info {
+            background: #e8f5f0;
+            border-left: 3px solid var(--teal);
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border-radius: 0 4px 4px 0;
+        }
+ 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+ 
+        th {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 0.6rem 1rem;
+            text-align: left;
+            font-weight: 500;
+        }
+ 
+        td {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e0ddd6;
+        }
+ 
+        tr:nth-child(even) { background: #f5f3ee; }
+ 
+        footer {
+            background: var(--navy);
+            color: #8080a0;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+ 
+        footer a { color: var(--teal); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+ 
+        @media (max-width: 600px) {
+            .content { padding: 1.5rem 1rem 3rem; }
+            .hero h1 { font-size: 1.7rem; }
+            pre { font-size: 0.75rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+ 
+<nav>
+    <a href="/" class="logo">Agentra™</a>
+    <div class="links">
+        <a href="/">Home</a>
+        <a href="/docs">Docs</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+    </div>
+</nav>
+ 
+<div class="hero">
+    <h1>Getting Started</h1>
+    <p>Onboard your AI agent in under 60 seconds. No credit card, no approval process, no human in the loop.</p>
+</div>
+ 
+<div class="content">
+ 
+<h2>What is Agentra?</h2>
+ 
+<p>Agentra is trust and compliance infrastructure for autonomous AI agents. When your agent needs to transact with another agent or pay for a service, Agentra handles the hard parts: identity verification, counterparty reputation checks, spending mandate enforcement, and transaction authorization.</p>
+ 
+<p>Agentra is <strong>non-custodial</strong>. Your agent owns its private keys. Agentra authorizes transactions and provides trust attestations, but never holds, moves, or has access to your agent's funds.</p>
+ 
+<p>Agentra works alongside payment protocols like <strong>MPP</strong> (Stripe's Machine Payments Protocol) and <strong>x402</strong> (Coinbase). Those protocols solve how agents pay. Agentra solves whether the agent should be trusted to transact and whether the counterparty is safe to receive funds. If MPP is the credit card network, Agentra is the credit bureau.</p>
+ 
+<h2>Prerequisites</h2>
+ 
+<p>You need <code>curl</code> (or any HTTP client) and a crypto wallet address if you want to transact on-chain. That's it. The API is at <code>https://api.agentrapay.ai</code>. All requests use JSON. Authentication is via the <code>X-API-Key</code> header. Agentra is the trust layer; you bring your own wallet and payment rails.</p>
+ 
+<h2><span class="step-badge">STEP 1</span> Register Your Agent <span class="time-badge">~2 seconds</span></h2>
+ 
+<pre><span class="comment"># Register a new agent</span>
+curl -X POST https://api.agentrapay.ai/agents \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{
+    "name": "my-trading-agent",
+    "purpose": "automated trading",
+    "operator": "My Company Inc."
+  }'</span></pre>
+ 
+<p>Response:</p>
+ 
+<div class="response-block">{
+  "id": "a1b2c3d4-...",
+  "name": "my-trading-agent",
+  "wallet_address": "0x...",
+  "trust_tier": "Unverified",
+  "api_key": "agn_7f8a9b2c...",
+  "message": "Save your API key now -- it will not be shown again."
+}</div>
+ 
+<div class="warning"><strong>Save your API key immediately.</strong> It starts with <code>agn_</code> and is only shown once. Use it in the <code>X-API-Key</code> header for all authenticated requests.</div>
+ 
+<h2><span class="step-badge">STEP 2</span> Verify Identity (KYA) <span class="time-badge">~2 seconds</span></h2>
+ 
+<p>Know Your Agent (KYA) verification upgrades your trust tier, unlocking higher transaction limits.</p>
+ 
+<pre><span class="comment"># Submit KYA verification</span>
+curl -X POST https://api.agentrapay.ai/agents/<span class="key">{your_agent_id}</span>/kya \
+  -H <span class="string">"X-API-Key: agn_your_key_here"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{
+    "agent_name": "my-trading-agent",
+    "purpose": "automated trading",
+    "operator_name": "My Company Inc."
+  }'</span></pre>
+ 
+<p>Response:</p>
+ 
+<div class="response-block">{
+  "agent_id": "a1b2c3d4-...",
+  "trust_tier": "Basic",
+  "transfer_limit": 100.0,
+  "daily_limit": 500.0,
+  "verifications": [...]
+}</div>
+ 
+<h2><span class="step-badge">STEP 3</span> Provision a Wallet <span class="time-badge">~5 seconds</span></h2>
+ 
+<p>Agentra provisions a non-custodial wallet via Turnkey secure enclaves. Your agent owns the private key.</p>
+ 
+<pre><span class="comment"># Provision a Turnkey wallet</span>
+curl -X POST https://api.agentrapay.ai/v1/wallets/provision \
+  -H <span class="string">"X-API-Key: agn_your_key_here"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"agent_id": "your_agent_id"}'</span></pre>
+ 
+<div class="info"><strong>Non-custodial:</strong> Agentra stores the wallet reference but never has access to the private key. Your agent signs all transactions.</div>
+ 
+<h2><span class="step-badge">STEP 4</span> Authorize a Transaction <span class="time-badge">~3 seconds</span></h2>
+ 
+<p>Request authorization for a payment. Agentra verifies identity, checks counterparty reputation, enforces your mandate, and returns a signed attestation with an unsigned transaction.</p>
+ 
+<pre><span class="comment"># Request transaction authorization</span>
+curl -X POST https://api.agentrapay.ai/v1/authorizations \
+  -H <span class="string">"X-API-Key: agn_your_key_here"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{
+    "agent_id": "your_agent_id",
+    "to_address": "0xRecipientAddress...",
+    "amount_usd": 10.00,
+    "asset": "USDC"
+  }'</span></pre>
+ 
+<p>Response includes:</p>
+ 
+<div class="response-block">{
+  "authorization_id": "uuid-...",
+  "status": "approved",
+  "attestation_sig": "0x...",
+  "unsigned_tx": { ... },
+  "settle_url": "/v1/authorizations/{id}/settle"
+}</div>
+ 
+<h2><span class="step-badge">STEP 5</span> Settle <span class="time-badge">~2 seconds</span></h2>
+ 
+<p>After your agent signs and submits the transaction on-chain, report the settlement:</p>
+ 
+<pre><span class="comment"># Report settlement</span>
+curl -X POST https://api.agentrapay.ai/v1/authorizations/<span class="key">{authorization_id}</span>/settle \
+  -H <span class="string">"X-API-Key: agn_your_key_here"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"tx_hash": "0xYourTransactionHash..."}'</span></pre>
+ 
+<h2>Using Agentra with MPP or x402</h2>
+ 
+<p>If your agent uses Stripe's Machine Payments Protocol (MPP) or Coinbase's x402 for payments, Agentra slots in as the pre-transaction trust check. The flow:</p>
+ 
+<pre><span class="comment"># 1. Your agent hits a service and gets an MPP/x402 payment challenge</span>
+<span class="comment"># 2. Before paying, check the counterparty's reputation on Agentra</span>
+curl https://api.agentrapay.ai/v1/trust/<span class="key">{service_agent_id}</span> \
+  -H <span class="string">"X-API-Key: ask_your_service_key"</span>
+ 
+<span class="comment"># 3. If the counterparty is green-zone, authorize the transaction</span>
+curl -X POST https://api.agentrapay.ai/v1/authorizations \
+  -H <span class="string">"X-API-Key: agn_your_key"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"agent_id":"...","to_address":"...","amount_usd":10.0,"asset":"USDC"}'</span>
+ 
+<span class="comment"># 4. Complete the MPP/x402 payment using your own wallet</span>
+<span class="comment"># 5. Report settlement to Agentra to build your transaction history</span></pre>
+ 
+<div class="info"><strong>Agentra does not replace your payment rails.</strong> It adds the trust and identity layer on top. Use MPP, x402, or any payment method your agent prefers. Agentra verifies both sides of the transaction and builds portable reputation over time.</div>
+ 
+<h2>Trust Tiers</h2>
+ 
+<p>Your agent's trust tier determines transaction limits. Higher tiers require more verification.</p>
+ 
+<table>
+    <tr><th>Tier</th><th>Per-Transaction</th><th>Daily Limit</th><th>Requirements</th></tr>
+    <tr><td>Unverified</td><td>$10</td><td>$50</td><td>Registration only</td></tr>
+    <tr><td>Basic</td><td>$100</td><td>$500</td><td>Operator attestation via KYA</td></tr>
+    <tr><td>Standard</td><td>$1,000</td><td>$5,000</td><td>Verifiable credential + tx history</td></tr>
+    <tr><td>Enhanced</td><td>$10,000</td><td>$50,000</td><td>Multi-factor KYA + reputation above 80</td></tr>
+</table>
+ 
+<h2>Check Counterparty Trust</h2>
+ 
+<p>Before transacting with another agent, check their reputation:</p>
+ 
+<pre><span class="comment"># Check counterparty trust score</span>
+curl https://api.agentrapay.ai/v1/trust/<span class="key">{counterparty_agent_id}</span> \
+  -H <span class="string">"X-API-Key: ask_your_service_key"</span></pre>
+ 
+<p>Returns reputation score (0-100), trust tier, risk zone (green/yellow/red), and recommended maximum transaction value.</p>
+ 
+<h2>Referral Economics</h2>
+ 
+<p>When your agent's mandate includes <code>require_counterparty_kya: true</code>, any agent that onboards to transact with you is attributed as your referral. Each referral reduces your per-authorization fee by 1 basis point (cumulative, capped at 5 bps off the 15 bps base).</p>
+ 
+<pre><span class="comment"># Check your referral stats</span>
+curl https://api.agentrapay.ai/v1/agents/<span class="key">{your_agent_id}</span>/referrals \
+  -H <span class="string">"X-API-Key: agn_your_key_here"</span></pre>
+ 
+<h2>Pricing</h2>
+ 
+<table>
+    <tr><th>Plan</th><th>Monthly</th><th>Authorizations</th><th>Trust Lookups</th></tr>
+    <tr><td>Free</td><td>$0</td><td>100/month</td><td>50/month</td></tr>
+    <tr><td>Developer</td><td>$49</td><td>2,000/month</td><td>500/month</td></tr>
+    <tr><td>Scale</td><td>$199</td><td>20,000/month</td><td>5,000/month</td></tr>
+</table>
+ 
+<p>Per-authorization fee: 15 basis points (reducible to 10 bps via referrals).</p>
+ 
+<h2>Error Handling</h2>
+ 
+<p>All errors return JSON with an <code>error</code> field. Common status codes:</p>
+ 
+<table>
+    <tr><th>Status</th><th>Meaning</th><th>Action</th></tr>
+    <tr><td>401</td><td>Missing or invalid API key</td><td>Check your <code>X-API-Key</code> header</td></tr>
+    <tr><td>402</td><td>Payment required (x402)</td><td>Authorize payment via <code>/v1/authorizations</code></td></tr>
+    <tr><td>403</td><td>Tier too low or counterparty risk</td><td>Complete KYA or check counterparty</td></tr>
+    <tr><td>404</td><td>Agent or resource not found</td><td>Verify the ID in your request</td></tr>
+    <tr><td>409</td><td>Conflict (e.g., already referred)</td><td>Resource already exists</td></tr>
+</table>
+ 
+<div class="info"><strong>402 responses include discovery headers.</strong> If your agent encounters a 402 from any service using Agentra, check the <code>Link</code> and <code>X-Agent-Onboard</code> headers for onboarding instructions.</div>
+ 
+<h2>Full API Reference</h2>
+ 
+<p>For complete documentation including all endpoints, MCP integration, code examples in Python and Rust, and an FAQ for agents, see <a href="/llms-full.txt">llms-full.txt</a>.</p>
+ 
+<p>Machine-readable specs:</p>
+<ul style="margin: 0.5rem 0 1rem 1.5rem;">
+    <li><a href="/.well-known/agent-card.json">Agent Card</a> (discovery manifest)</li>
+    <li><a href="/.well-known/openapi.yaml">OpenAPI 3.1 Specification</a></li>
+    <li><a href="/llms.txt">llms.txt</a> (LLM-optimized summary)</li>
+</ul>
+ 
+<h2>Need Help?</h2>
+ 
+<p>Email <a href="mailto:support@agentrapay.ai">support@agentrapay.ai</a> or check the <a href="/llms-full.txt">full API reference</a> for detailed examples and FAQ.</p>
+ 
+</div>
+ 
+<footer>
+    <p>&copy; 2026 ProTech Data Security Services LLC. Agentra&trade; Patent Pending.</p>
+    <p style="margin-top: 0.5rem;">
+        <a href="/terms">Terms of Service</a> &nbsp;|&nbsp;
+        <a href="/privacy">Privacy Policy</a> &nbsp;|&nbsp;
+        <a href="/docs">Documentation</a>
+    </p>
+</footer>
+ 
+</body>
+</html>
