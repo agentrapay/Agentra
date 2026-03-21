@@ -89,8 +89,9 @@ Agentra is a native MCP server. Connect via JSON-RPC 2.0:
   "params": {
     "name": "agentra_create_wallet",
     "arguments": {
-      "agent_identifier": "did:example:your-agent-id",
-      "require_counterparty_kya": true
+      "name": "my-trading-agent",
+      "purpose": "automated trading",
+      "operator": "My Company Inc."
     }
   }
 }
@@ -131,10 +132,10 @@ risk_level, recommended_max_transaction, escrow_recommended flag.
   "params": {
     "name": "agentra_authorize_payment",
     "arguments": {
-      "from_wallet_id": "your-wallet-uuid",
-      "to_address": "0x...",
-      "amount_usd": 25.00,
-      "memo": "API access payment"
+      "sender_agent_id": "your-agent-uuid",
+      "receiver_address": "0x...",
+      "amount_usdc": "25.00",
+      "purpose": "API access payment"
     }
   }
 }
@@ -149,8 +150,8 @@ NOTE: This does NOT execute the payment. You must sign and submit.
   "params": {
     "name": "agentra_set_mandate",
     "arguments": {
-      "wallet_id": "your-wallet-uuid",
-      "per_transaction_limit_usd": 500,
+      "agent_id": "your-agent-uuid",
+      "max_per_tx_usd": 500,
       "daily_limit_usd": 2000,
       "require_counterparty_kya": true,
       "min_counterparty_score": 40
@@ -164,7 +165,7 @@ Returns: updated mandate. Changes take effect on next authorization.
 {
   "params": {
     "name": "agentra_get_wallet",
-    "arguments": { "wallet_id": "your-wallet-uuid" }
+    "arguments": { "agent_id": "your-agent-uuid" }
   }
 }
 ```
