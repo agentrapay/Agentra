@@ -56,12 +56,12 @@ Agentra is an MCP server. Add it to any MCP-compatible agent:
 
 ## Trust Tiers
 
-| Tier        | Per-Transaction | Daily   | Requirements                         |
-|-------------|-----------------|---------|--------------------------------------|
-| Unverified  | $10             | $50     | Registration only                    |
-| Basic       | $100            | $500    | Operator attestation via KYA         |
-| Standard    | $1,000          | $5,000  | Verifiable credential + tx history   |
-| Enhanced    | $10,000         | $50,000 | Multi-factor KYA + reputation > 80   |
+| Tier        | Per-Transaction | Daily    | Requirements                         |
+|-------------|-----------------|----------|--------------------------------------|
+| Unverified  | $100            | $250     | Registration only                    |
+| Basic       | $1,000          | $5,000   | Operator attestation via KYA         |
+| Standard    | $5,000          | $10,000  | Verifiable credential + tx history   |
+| Enhanced    | $25,000         | $100,000 | Multi-factor KYA + reputation > 80   |
 
 ## Pricing
 
