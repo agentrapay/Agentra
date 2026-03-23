@@ -293,8 +293,8 @@ curl -X POST https://api.agentrapay.ai/agents/<span class="key">{your_agent_id}<
 <div class="response-block">{
   "agent_id": "a1b2c3d4-...",
   "trust_tier": "Basic",
-  "transfer_limit": 100.0,
-  "daily_limit": 500.0,
+  "transfer_limit": 1000.0,
+  "daily_limit": 5000.0,
   "verifications": [...]
 }</div>
  
@@ -371,10 +371,10 @@ curl -X POST https://api.agentrapay.ai/v1/authorizations \
  
 <table>
     <tr><th>Tier</th><th>Per-Transaction</th><th>Daily Limit</th><th>Requirements</th></tr>
-    <tr><td>Unverified</td><td>$10</td><td>$50</td><td>Registration only</td></tr>
-    <tr><td>Basic</td><td>$100</td><td>$500</td><td>Operator attestation via KYA</td></tr>
-    <tr><td>Standard</td><td>$1,000</td><td>$5,000</td><td>Verifiable credential + tx history</td></tr>
-    <tr><td>Enhanced</td><td>$10,000</td><td>$50,000</td><td>Multi-factor KYA + reputation above 80</td></tr>
+    <tr><td>Unverified</td><td>$100</td><td>$250</td><td>Registration only</td></tr>
+    <tr><td>Basic</td><td>$1,000</td><td>$5,000</td><td>Operator attestation via KYA</td></tr>
+    <tr><td>Standard</td><td>$5,000</td><td>$10,000</td><td>Verifiable credential + tx history</td></tr>
+    <tr><td>Enhanced</td><td>$25,000</td><td>$100,000</td><td>Multi-factor KYA + reputation above 80</td></tr>
 </table>
  
 <h2>Check Counterparty Trust</h2>
