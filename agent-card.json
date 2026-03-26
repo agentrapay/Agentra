@@ -1,0 +1,115 @@
+{
+  "name": "Agentra",
+  "description": "Identity oracle and trust layer for autonomous AI agent transactions. Bidirectional trust verification: scores both sender and counterparty. Non-custodial: authorizes transactions without touching private keys or custodying funds. Patent Pending.",
+  "url": "https://api.agentrapay.ai",
+  "version": "1.0.0",
+  "protocol": {
+    "mcp": {
+      "endpoint": "https://api.agentrapay.ai/mcp",
+      "transport": "http-sse",
+      "tools": 6,
+      "resources": 3
+    },
+    "rest": {
+      "openapi": "https://api.agentrapay.ai/.well-known/openapi.yaml",
+      "base_url": "https://api.agentrapay.ai"
+    }
+  },
+  "network": {
+    "chain": "Base",
+    "chain_id": 8453,
+    "environment": "mainnet",
+    "settlement_token": "USDC",
+    "settlement_token_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "attestation_contract": "0x6089A2023AF60a59ebbAF94212ecf557398A90F7",
+    "attestation_schema_uid": "0xe1fae0da770807fc242cfda60d7739a976f10d84cde3371a00f715ff28e6ecf7",
+    "attestation_service": "EAS on Base"
+  },
+  "authentication": {
+    "type": "api_key",
+    "header": "X-API-Key",
+    "key_prefixes": {
+      "agent": "agn_",
+      "service": "ask_"
+    }
+  },
+  "capabilities": [
+    "agent_registration",
+    "know_your_agent_verification",
+    "bidirectional_trust_scoring",
+    "payment_authorization",
+    "counterparty_verification",
+    "mandate_enforcement",
+    "wallet_provisioning",
+    "eas_attestation"
+  ],
+  "onboarding_flow": [
+    {
+      "step": 1,
+      "endpoint": "POST /agents",
+      "description": "Register agent and receive API key"
+    },
+    {
+      "step": 2,
+      "endpoint": "POST /agents/{id}/kya",
+      "description": "Complete Know Your Agent identity verification"
+    },
+    {
+      "step": 3,
+      "endpoint": "POST /v1/wallets/provision",
+      "description": "Provision a non-custodial smart wallet"
+    },
+    {
+      "step": 4,
+      "endpoint": "POST /v1/authorizations",
+      "description": "Create first trust-verified authorization"
+    }
+  ],
+  "trust_tiers": [
+    {
+      "tier": "Unverified",
+      "description": "Registered but not KYA-verified. Limited capabilities."
+    },
+    {
+      "tier": "Basic",
+      "description": "KYA identity verified. Standard transaction limits."
+    },
+    {
+      "tier": "Standard",
+      "description": "Established transaction history. Elevated limits."
+    },
+    {
+      "tier": "Enhanced",
+      "description": "Full verification with on-chain attestation history. Highest limits."
+    }
+  ],
+  "pricing": {
+    "model": "saas_tiered",
+    "plans": [
+      {
+        "name": "Free",
+        "monthly_cost_usd": 0,
+        "authorizations_per_month": 100,
+        "trust_lookups_per_month": 50
+      },
+      {
+        "name": "Developer",
+        "monthly_cost_usd": 49,
+        "authorizations_per_month": 5000,
+        "trust_lookups_per_month": 2500
+      },
+      {
+        "name": "Scale",
+        "monthly_cost_usd": 199,
+        "authorizations_per_month": 50000,
+        "trust_lookups_per_month": 25000
+      }
+    ]
+  },
+  "links": {
+    "website": "https://agentrapay.ai",
+    "api": "https://api.agentrapay.ai",
+    "llms_txt": "https://api.agentrapay.ai/llms.txt",
+    "llms_full_txt": "https://api.agentrapay.ai/llms-full.txt"
+  }
+}
