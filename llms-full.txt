@@ -1,485 +1,228 @@
-# Agentra -- Complete API Reference
-> Agentra is the trust and compliance infrastructure for autonomous AI agent
-> commerce. Non-custodial wallet provisioning, Know Your Agent (KYA) identity,
-> bidirectional reputation scoring, and x402 payment authorization.
-> Zero human-in-the-loop. Agentra authorizes transactions but never
-> touches private keys.
----
-## Table of Contents
-1. Overview and Quick Start
-2. Non-Custodial Architecture
-3. Authentication
-4. MCP Integration (Recommended)
-5. REST API Endpoints
-6. Trust Tiers and Reputation Zones
-7. Authorization Flow (x402)
-8. Referral Economics
-9. Error Handling and 402 Challenges
-10. Code Examples
-11. Pricing
-12. FAQ for Agents
----
-## 1. Overview and Quick Start
-Agentra enables AI agents to prove identity, build reputation, provision
-wallets, and authorize transactions on Base L2. Agents self-onboard in
-~15 seconds.
-**Minimum viable integration (3 calls):**
-```
-POST /agents                -> register, receive agent_id + api_key
-POST /agents/{id}/kya       -> submit KYA verification, upgrade trust tier
-POST /v1/authorizations     -> authorize first transaction
-```
-Optional but recommended:
-```
-POST /v1/wallets/provision  -> provision non-custodial wallet via Turnkey
-GET  /v1/trust/{agent_id}   -> check counterparty reputation before transacting
-```
----
-## 2. Non-Custodial Architecture
-Agentra operates as an Identity Oracle and Trust Layer. It does NOT custody
-funds, hold private keys, or execute transactions on behalf of agents.
-The authorization flow:
-1. Agent requests authorization from Agentra
-2. Agentra verifies identity, checks counterparty reputation, enforces mandates
-3. Agentra returns a signed attestation + unsigned transaction
-4. Agent signs the transaction with its OWN private key
-5. Agent submits the signed transaction to the blockchain
-6. Agent calls the settle endpoint to record completion
-Wallets are provisioned via Turnkey secure enclaves. The agent owns the
-private key. Agentra stores the external wallet ID for reference but has
-no access to the key material.
-This architecture enables launch without smart contract audits or money
-transmitter licenses. The system is designed to be "custody-ready" for a
-future upgrade path.
----
-## 3. Authentication
-All requests require an API key in the `X-API-Key` header:
-```
-X-API-Key: agn_<your_key_here>
-```
-Two key types exist:
-| Type        | Prefix | Issued At           | Used For                         |
-|-------------|--------|---------------------|----------------------------------|
-| Agent key   | agn_   | POST /agents        | Agent operations (wallets, auth) |
-| Service key | ask_   | POST /v1/keys       | Third-party trust lookups, admin |
-Important: Use `X-API-Key` header, NOT `Authorization: Bearer`. Bearer
-tokens are not supported.
----
-## 4. MCP Integration (Recommended)
-Agentra is a native MCP server. Connect via JSON-RPC 2.0:
-**Endpoint**: `POST https://api.agentrapay.ai/mcp`
-### Initialize Session
-```json
+# Agentra™ -- Complete API Reference
+# Trust Infrastructure for Autonomous AI Agents
+# Patent Pending
+
+## Overview
+
+Agentra is the identity oracle and trust layer for autonomous AI agent transactions on Base Mainnet. It provides bidirectional trust verification, scoring both the sending agent and the receiving counterparty on every transaction.
+
+Architecture: Non-custodial. Agentra authorizes transactions and issues trust attestations but never touches private keys or custodies funds.
+
+Base URL: https://api.agentrapay.ai
+Network: Base Mainnet (Chain ID 8453)
+Settlement: USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913)
+Auth: X-API-Key header
+
+## On-Chain Contracts
+
+AgentTrustAttestation: 0x6089A2023AF60a59ebbAF94212ecf557398A90F7
+EAS Schema UID: 0xe1fae0da770807fc242cfda60d7739a976f10d84cde3371a00f715ff28e6ecf7
+EAS: 0x4200000000000000000000000000000000000021
+SchemaRegistry: 0x4200000000000000000000000000000000000020
+
+## Authentication
+
+All authenticated endpoints require an X-API-Key header (not Bearer).
+Agent API keys: agn_ prefix (issued at registration)
+Service API keys: ask_ prefix (issued via POST /v1/keys)
+
+## Onboarding Flow
+
+1. POST /agents -- Register agent, receive agn_ API key
+2. POST /agents/{id}/kya -- Complete Know Your Agent verification
+3. POST /v1/wallets/provision -- Provision non-custodial smart wallet (Turnkey WaaS)
+4. POST /v1/authorizations -- Create first trust-verified authorization
+
+## Endpoints
+
+### Agent Registration
+
+POST /agents
+Content-Type: application/json
+
+Request:
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "initialize",
-  "params": {
-    "protocolVersion": "2025-03-26",
-    "clientInfo": { "name": "your-agent", "version": "1.0" }
-  }
+  "name": "my-trading-agent",
+  "agent_type": "autonomous",
+  "capabilities": ["payment", "transfer"]
 }
-```
-### MCP Tools (6)
-**agentra_create_wallet** -- Provision a non-custodial wallet
-```json
+
+Response (201):
 {
-  "jsonrpc": "2.0", "id": 2,
-  "method": "tools/call",
-  "params": {
-    "name": "agentra_create_wallet",
-    "arguments": {
-      "name": "my-trading-agent",
-      "purpose": "automated trading",
-      "operator": "My Company Inc."
-    }
-  }
-}
-```
-Returns: wallet_id, external_wallet_id, wallet_provider ("turnkey"),
-custody_mode ("non_custodial"), trust_tier, limits.
-Next step: verify identity with agentra_verify_identity to raise limits.
-**agentra_verify_identity** -- Submit KYA verification
-```json
-{
-  "params": {
-    "name": "agentra_verify_identity",
-    "arguments": {
-      "agent_id": "uuid",
-      "verification_type": "operator_attestation",
-      "credentials": { "operator_name": "Your Operator" }
-    }
-  }
-}
-```
-Returns: updated trust_tier, new transfer_limit, new daily_limit.
-**agentra_check_reputation** -- Query counterparty trust (CALL BEFORE PAYING)
-```json
-{
-  "params": {
-    "name": "agentra_check_reputation",
-    "arguments": {
-      "agent_id": "counterparty-uuid"
-    }
-  }
-}
-```
-Returns: reputation_score (0-100), trust_tier, zone (green/yellow/red),
-risk_level, recommended_max_transaction, escrow_recommended flag.
-**agentra_authorize_payment** -- Request transaction authorization
-```json
-{
-  "params": {
-    "name": "agentra_authorize_payment",
-    "arguments": {
-      "sender_agent_id": "your-agent-uuid",
-      "receiver_address": "0x...",
-      "amount_usdc": "25.00",
-      "purpose": "API access payment"
-    }
-  }
-}
-```
-Returns: authorization_id, attestation (signed by Agentra),
-unsigned_transaction (for you to sign with your key),
-settle_url ("/v1/authorizations/{id}/settle").
-NOTE: This does NOT execute the payment. You must sign and submit.
-**agentra_set_mandate** -- Create or update spending policy
-```json
-{
-  "params": {
-    "name": "agentra_set_mandate",
-    "arguments": {
-      "agent_id": "your-agent-uuid",
-      "max_per_tx_usd": 500,
-      "daily_limit_usd": 2000,
-      "require_counterparty_kya": true,
-      "min_counterparty_score": 40
-    }
-  }
-}
-```
-Returns: updated mandate. Changes take effect on next authorization.
-**agentra_get_wallet** -- Query wallet status
-```json
-{
-  "params": {
-    "name": "agentra_get_wallet",
-    "arguments": { "agent_id": "your-agent-uuid" }
-  }
-}
-```
-Returns: wallet_id, wallet_provider, custody_mode, trust_tier, balance,
-active mandate, daily usage stats.
-### MCP Resources (3)
-| URI                          | Description                               |
-|------------------------------|-------------------------------------------|
-| agentra://trust-tiers        | Tier definitions, limits, upgrade paths   |
-| agentra://supported-chains   | Chains, tokens, faucets                   |
-| agentra://pricing            | Fee schedule and free tier details        |
-### MCP Prompts (2)
-| Name                    | Description                                  |
-|-------------------------|----------------------------------------------|
-| onboard                 | Guided flow: register + KYA + wallet + mandate |
-| pre_transaction_check   | Safety check before authorizing payment      |
----
-## 5. REST API Endpoints
-Base URL: `https://api.agentrapay.ai`
-### Agent Management
-| Method | Path                              | Auth     | Description                    |
-|--------|-----------------------------------|----------|--------------------------------|
-| POST   | /agents                           | None     | Register agent, get api_key    |
-| GET    | /agents/{id}                      | agn_     | Get agent details              |
-| POST   | /agents/{id}/kya                  | agn_     | Submit KYA verification        |
-| PUT    | /agents/{id}/reputation           | agn_     | Update reputation score        |
-| GET    | /v1/agents/{id}/referrals         | agn_     | List referred agents + fees    |
-| GET    | /v1/agents/{id}/attestation       | agn_     | On-chain EAS attestation data  |
-### Wallets and Transactions
-| Method | Path                              | Auth     | Description                    |
-|--------|-----------------------------------|----------|--------------------------------|
-| POST   | /v1/wallets/provision             | agn_     | Provision Turnkey wallet       |
-| POST   | /v1/authorizations                | agn_     | Request tx authorization       |
-| POST   | /v1/authorizations/{id}/settle    | agn_     | Record settlement              |
-### Trust and Reputation
-| Method | Path                              | Auth     | Description                    |
-|--------|-----------------------------------|----------|--------------------------------|
-| GET    | /v1/trust/{agent_id}              | ask_     | Monetized trust score lookup   |
-### Service Keys and Billing
-| Method | Path                              | Auth     | Description                    |
-|--------|-----------------------------------|----------|--------------------------------|
-| POST   | /v1/keys                          | agn_     | Create service API key         |
-### Public Endpoints (No Auth)
-| Method | Path                              | Description                        |
-|--------|-----------------------------------|------------------------------------|
-| GET    | /v1/health                        | Service health check               |
-| GET    | /v1/status/metrics                | Performance, uptime, network stats |
-| GET    | /v1/network/stats                 | Network growth topology            |
-### Discovery Endpoints (No Auth, Static)
-| Method | Path                              | Description                        |
-|--------|-----------------------------------|------------------------------------|
-| POST   | /mcp                              | MCP JSON-RPC endpoint              |
-| GET    | /.well-known/agent-card.json      | Agent discovery card               |
-| GET    | /.well-known/openapi.yaml         | OpenAPI 3.1 specification          |
-| GET    | /llms.txt                         | LLM-optimized summary              |
-| GET    | /llms-full.txt                    | This file                          |
----
-## 6. Trust Tiers and Reputation Zones
-### Trust Tiers (access levels)
-| Tier        | Per-Tx Limit | Daily Limit | Requirements                        |
-|-------------|--------------|-------------|-------------------------------------|
-| Unverified  | $100         | $250        | Registration only                   |
-| Basic       | $1,000       | $5,000      | Operator attestation via KYA        |
-| Standard    | $5,000       | $10,000     | Verifiable credential + tx history  |
-| Enhanced    | $25,000      | $100,000    | Multi-factor KYA + reputation > 80  |
-### Reputation Zones (risk assessment)
-| Zone   | Score Range | Meaning                                       |
-|--------|-------------|-----------------------------------------------|
-| Green  | 70-100      | Low risk. Full transaction capabilities.       |
-| Yellow | 40-69       | Medium risk. May require higher sender tier.   |
-| Red    | 0-39        | High risk. Escrow recommended or blocked.      |
-New agents start at reputation 0.0 (Red zone). Reputation increases
-with successful transaction settlements (+1.0 per settlement, capped at
-100.0). KYA-verified agents (Basic+) can transact at 0.0 reputation
-within their tier limits. Only agents with negative reputation are blocked.
----
-## 7. Authorization Flow (x402)
-The x402 protocol enables machine-to-machine payment authorization.
-```
-Agent A                    Service                  Agentra
-   |                         |                        |
-   |--- GET /resource ------>|                        |
-   |<-- 402 Payment Required |                        |
-   |    X-Price: 0.05        |                        |
-   |    X-Asset: USDC        |                        |
-   |    X-Destination: 0x... |                        |
-   |    Link: <llms.txt>     |                        |
-   |                         |                        |
-   |--- POST /v1/authorizations ---------------------->|
-   |    { sender_agent_id, receiver_address,          |
-   |      amount_usdc, purpose }                      |
-   |<-- { authorization_id, attestation,              |
-   |      unsigned_transaction }  --------------------|
-   |                         |                        |
-   | [Agent signs tx with own key]                    |
-   | [Agent submits signed tx to Base]                |
-   |                         |                        |
-   |--- POST /v1/authorizations/{id}/settle --------->|
-   |    { tx_hash: 0x... }                            |
-   |<-- { status: settled } --------------------------|
-   |                         |                        |
-   |--- GET /resource ------>|                        |
-   |    X-Payment-Proof: ... |                        |
-   |<-- 200 OK + content ----|                        |
-```
-Key: Agentra provides the attestation and unsigned tx. The agent signs
-and submits. Agentra never holds keys or moves funds.
----
-## 8. Referral Economics
-Agentra tracks agent-to-agent referrals. When Agent A's mandate includes
-`require_counterparty_kya: true`, any Agent B that onboards to transact
-with Agent A is attributed as a referral.
-**Fee reductions:**
-- Each successful referral: 1 basis point reduction
-- Cumulative cap: 5 basis points
-- Base fee: 15 bps -> minimum fee: 10 bps
-**Referral types:**
-- `mandate_kya_required` -- counterparty onboarded due to mandate
-- `direct_invite` -- explicit invitation (future)
-- `breadcrumb_402` -- agent discovered Agentra via 402 response headers
-Check your stats: `GET /v1/agents/{agent_id}/referrals`
-Network growth: `GET /v1/network/stats`
----
-## 9. Error Handling and 402 Challenges
-### Standard Error Response
-```json
-{
-  "error": "error_code",
-  "message": "Human-readable description"
-}
-```
-### Common Error Codes
-| Code                        | Status | Meaning                                  |
-|-----------------------------|--------|------------------------------------------|
-| agent_not_found             | 404    | Agent ID does not exist                  |
-| insufficient_tier           | 403    | Trust tier too low for this operation    |
-| mandate_exceeded            | 402    | Transaction exceeds mandate limits       |
-| counterparty_kya_required   | 402    | Counterparty must complete KYA first     |
-| counterparty_risk           | 403    | Counterparty reputation too low          |
-| already_referred            | 409    | Agent has already been referred          |
-### Handling 402 Challenges
-A 402 response includes a JSON body with `required_actions`:
-```json
-{
-  "error": "mandate_exceeded",
-  "required_actions": [
-    {
-      "action": "set_mandate",
-      "endpoint": "POST /agents/{id}/mandate",
-      "params": { "per_transaction_limit_usd": 500 }
-    }
-  ]
-}
-```
-When 402 is returned due to `counterparty_kya_required`, the response
-includes the referrer agent ID:
-```json
-{
-  "error": "counterparty_kya_required",
-  "referrer_agent_id": "uuid-of-requiring-agent",
-  "required_actions": [
-    { "action": "register", "endpoint": "POST /agents" },
-    { "action": "verify_identity", "endpoint": "POST /agents/{id}/kya" }
-  ]
-}
-```
-Additionally, all 402 responses include discovery headers:
-```
-Link: <https://agentrapay.ai/llms.txt>; rel="help"
-X-Agent-Onboard: https://api.agentrapay.ai/mcp
-X-Agent-Docs: https://agentrapay.ai/.well-known/agent-card.json
-X-Agent-OpenAPI: https://agentrapay.ai/.well-known/openapi.yaml
-```
-If you are an agent encountering these headers for the first time:
-follow the Link header to learn about Agentra, or connect directly
-to the MCP endpoint at X-Agent-Onboard for tool-based onboarding.
----
-## 10. Code Examples
-### Python: Register + Verify + Authorize
-```python
-import requests
-BASE = "https://api.agentrapay.ai"
-# Step 1: Register
-agent = requests.post(f"{BASE}/agents", json={
+  "agent": {
+    "id": "uuid",
     "name": "my-trading-agent",
-    "purpose": "automated trading",
-    "operator": "My Company Inc."
-}).json()
-agent_id = agent["id"]
-api_key = agent["api_key"]  # agn_ prefixed -- save this, shown only once
-headers = {"X-API-Key": api_key}
-# Step 2: KYA verification (unlocks Basic tier: $1,000/tx, $5,000/day)
-kya = requests.post(f"{BASE}/agents/{agent_id}/kya",
-    headers=headers,
-    json={
-        "agent_name": "my-trading-agent",
-        "purpose": "automated trading",
-        "operator_name": "My Company Inc."
-    }
-).json()
-print(f"Trust tier: {kya['trust_tier']}")  # "Basic"
-# Step 3: Provision non-custodial wallet via Turnkey
-wallet = requests.post(f"{BASE}/v1/wallets/provision",
-    headers=headers,
-    json={"agent_id": agent_id}
-).json()
-print(f"Wallet: {wallet['wallet_address']}")
-print(f"Provider: {wallet['wallet_provider']}")  # "turnkey"
-# Step 4: Check counterparty before paying
-trust = requests.get(f"{BASE}/v1/trust/{counterparty_id}",
-    headers={"X-API-Key": service_key}  # ask_ prefixed key
-).json()
-if trust.get("reputation_score", 0) < 0:
-    print("Counterparty has negative reputation, aborting")
-else:
-    # Step 5: Request authorization
-    auth = requests.post(f"{BASE}/v1/authorizations",
-        headers=headers,
-        json={
-            "sender_agent_id": agent_id,
-            "receiver_address": "0x...",
-            "amount_usdc": "25.00",  # string, not number
-            "purpose": "API access payment"
-        }
-    ).json()
-    # auth contains: authorization_id, attestation, unsigned_tx, mandate_snapshot
-    # Sign unsigned_tx with your private key, submit to chain, then settle:
-    settle = requests.post(
-        f"{BASE}/v1/authorizations/{auth['authorization_id']}/settle",
-        headers=headers,
-        json={"tx_hash": "0xYourTxHash..."}
-    ).json()
-    print(f"Settlement: {settle['settlement_status']}")  # "confirmed"
-```
-### Rust: Register + Authorize
-```rust
-use reqwest::Client;
-use serde_json::json;
-let client = Client::new();
-let base = "https://api.agentrapay.ai";
-// Register
-let agent: serde_json::Value = client
-    .post(format!("{base}/agents"))
-    .json(&json!({
-        "name": "rust-agent",
-        "purpose": "infrastructure testing",
-        "operator": "Test Operator"
-    }))
-    .send().await?.json().await?;
-let agent_id = agent["id"].as_str().unwrap();
-let api_key = agent["api_key"].as_str().unwrap(); // agn_ prefix
-// Request authorization
-let auth: serde_json::Value = client
-    .post(format!("{base}/v1/authorizations"))
-    .header("X-API-Key", api_key)
-    .json(&json!({
-        "sender_agent_id": agent_id,
-        "receiver_address": "0xRecipient...",
-        "amount_usdc": "10.00",
-        "purpose": "infrastructure payment"
-    }))
-    .send().await?.json().await?;
-// auth["unsigned_tx"] -> sign with your key
-// auth["authorization_id"] -> use in settle call
-println!("Authorization: {}", auth["authorization_id"]);
-```
----
-## 11. Pricing
-| Plan      | Monthly | Authorizations | Trust Lookups | Support          |
-|-----------|---------|----------------|---------------|------------------|
-| Free      | $0      | 100/month      | 50/month      | Community        |
-| Developer | $49     | 2,000/month    | 500/month     | Email            |
-| Scale     | $199    | 20,000/month   | 5,000/month   | Priority + EAS   |
-Per-authorization fee: 15 basis points (reducible to 10 bps via referrals).
-Trust Score API lookups: $0.001 per lookup beyond plan allowance.
-On-chain EAS attestations: included in Scale plan, $0.50 each on other plans.
----
-## 12. FAQ for Agents
-**Q: What does non-custodial mean?**
-A: Agentra never holds your private keys. Your wallet is provisioned via
-Turnkey secure enclaves. You sign all transactions yourself. Agentra
-provides the trust attestation that authorizes the transaction.
-**Q: I hit a 402 error. What do I do?**
-A: Check the response headers for `Link` and `X-Agent-Onboard`. Follow
-the Link to read documentation, or connect to the MCP endpoint for
-guided onboarding. Then: register (POST /agents), verify identity
-(POST /agents/{id}/kya), and retry.
-**Q: What if a counterparty requires KYA but I'm not verified?**
-A: Call `POST /agents/{agent_id}/kya` with at least an agent_name and
-purpose. Verification is instant. Then retry the transaction. Your
-onboarding will be attributed as a referral to the requiring agent.
-**Q: Can I check if a counterparty is trustworthy before paying?**
-A: Yes. Always call `GET /v1/trust/{agent_id}` first. It returns the
-agent's trust tier, reputation score, and (at higher service tiers)
-transaction history and risk flags.
-**Q: What happens if my mandate limits are too low?**
-A: You'll get a 403 response with a denial reason and an upgrade_path
-object showing your current tier, the next tier's limits, what's required
-to upgrade, and the endpoint to call. Follow the upgrade_path to raise
-your limits.
-**Q: How do referral fee reductions work?**
-A: Each agent you onboard (via your require_counterparty_kya mandate)
-reduces your per-authorization fee by 1 bps, up to 5 bps off the
-15 bps base rate. Check your stats at GET /v1/agents/{id}/referrals.
-**Q: How do I verify my Agentra reputation outside the platform?**
-A: Agents on the Scale plan receive EAS (Ethereum Attestation Service)
-attestations on Base when they reach trust tier milestones. These are
-on-chain and verifiable by anyone. Query your attestation at
-GET /v1/agents/{id}/attestation.
-**Q: What agent frameworks are supported?**
-A: Any MCP-compatible framework (Claude, LangChain, CrewAI, AutoGen,
-OpenAI Assistants). Any framework that can make HTTP calls works via REST.
-**Q: What chain does Agentra use?**
-A: Base (Coinbase L2). Currently on Sepolia testnet for developer preview.
-Base mainnet deployment is planned post-funding.
----
-(c) 2026 ProTech Data Security Services LLC. Agentra(TM) Patent Pending.
+    "agent_type": "autonomous",
+    "trust_tier": "Unverified",
+    "created_at": "2026-03-25T00:00:00Z"
+  },
+  "api_key": "agn_..."
+}
+
+### KYA Verification
+
+POST /agents/{id}/kya
+X-API-Key: agn_...
+Content-Type: application/json
+
+Request:
+{
+  "verification_type": "standard",
+  "credentials": { ... }
+}
+
+### Authorization (Core Transaction Flow)
+
+POST /v1/authorizations
+X-API-Key: agn_...
+Content-Type: application/json
+
+Request:
+{
+  "agent_id": "uuid",
+  "action": "transfer",
+  "amount": "100.00",
+  "currency": "USDC",
+  "recipient": "0x...",
+  "chain_id": 8453
+}
+
+Response (201):
+{
+  "authorization_id": "uuid",
+  "status": "approved",
+  "trust_score_sender": 0.85,
+  "trust_score_recipient": 0.72,
+  "attestation_uid": "0x...",
+  "unsigned_transaction": { ... },
+  "expires_at": "2026-03-25T01:00:00Z"
+}
+
+Note: require_counterparty_kya defaults to true. This is the viral growth mechanism: every verified agent recruits its counterparties into the verification funnel.
+
+### Settlement
+
+POST /v1/authorizations/{id}/settle
+X-API-Key: agn_...
+Content-Type: application/json
+
+Request:
+{
+  "transaction_hash": "0x..."
+}
+
+### Trust Score Query
+
+GET /v1/trust/{agent_id}
+X-API-Key: agn_... (or ask_...)
+
+Response:
+{
+  "agent_id": "uuid",
+  "trust_tier": "Standard",
+  "trust_score": 0.85,
+  "total_authorizations": 47,
+  "successful_settlements": 45,
+  "attestation_count": 12
+}
+
+Response detail varies by plan tier: Free returns tier only, Developer returns score + counts, Scale returns full history.
+
+### Wallet Provisioning
+
+POST /v1/wallets/provision
+X-API-Key: agn_...
+Content-Type: application/json
+
+Request:
+{
+  "agent_id": "uuid"
+}
+
+Response:
+{
+  "wallet_address": "0x...",
+  "wallet_provider": "turnkey",
+  "custody_mode": "non_custodial"
+}
+
+### Service API Keys
+
+POST /v1/keys
+X-API-Key: agn_...
+Content-Type: application/json
+
+Request:
+{
+  "name": "production-key",
+  "permissions": ["trust_read", "authorization_create"]
+}
+
+Response:
+{
+  "key": "ask_...",
+  "name": "production-key"
+}
+
+### Health Check
+
+GET /v1/health
+
+Response:
+{
+  "status": "healthy",
+  "network": "mainnet",
+  "chain_id": 8453
+}
+
+## MCP Server
+
+POST /mcp (JSON-RPC 2.0)
+
+Tools:
+- create_wallet -- Provision a non-custodial smart wallet for an agent
+- verify_identity -- Submit KYA verification credentials
+- check_reputation -- Query an agent's trust score (CALL THIS BEFORE paying unknown agents)
+- pay -- Create a trust-verified payment authorization
+- set_mandate -- Configure counterparty risk enforcement rules
+- get_wallet -- Retrieve wallet details and balance
+
+Resources:
+- trust-tiers -- Available trust tiers and their capabilities
+- supported-chains -- Supported blockchain networks (Base Mainnet)
+- pricing -- Current plan tiers and rate limits
+
+## Trust Tiers
+
+- Unverified: Registered, not KYA-verified. Limited to 10 USDC per transaction.
+- Basic: KYA-verified. Standard limits.
+- Standard: Established history. Elevated limits.
+- Enhanced: Full verification with on-chain attestation history. Highest limits.
+
+## Pricing
+
+Free: $0/mo -- 100 authorizations + 50 trust lookups
+Developer: $49/mo -- 5,000 authorizations + 2,500 trust lookups
+Scale: $199/mo -- 50,000 authorizations + 25,000 trust lookups
+
+## Key Concepts
+
+Bidirectional Trust: Every authorization verifies both sender and recipient. No competitor currently does both.
+Mandate Engine: Agents define counterparty risk rules. Transactions failing mandate checks are rejected before authorization.
+EAS Attestations: Trust events are recorded on-chain via Ethereum Attestation Service on Base. Accumulated reputation becomes a switching cost (non-portable to competitors).
+Non-Custodial: Agentra issues authorizations and unsigned transactions. The agent signs and broadcasts independently. Agentra never holds keys or funds.
+
+## Technical Stack
+
+Backend: Rust (Axum 0.8 / Tokio)
+Database: PostgreSQL
+Chain: Base Mainnet (ERC-4337 smart accounts)
+Wallets: Turnkey WaaS
+Attestations: Ethereum Attestation Service (EAS)
+Protocols: x402, ERC-8004, W3C DIDs, ERC-5192 SBTs
+
+## Links
+
+Website: https://agentrapay.ai
+API: https://api.agentrapay.ai
+Discovery: https://api.agentrapay.ai/.well-known/agent-card.json
